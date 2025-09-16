@@ -1,61 +1,86 @@
 @model DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard";
+    var upcomingCount = Model.UpcomingRenewals.Count;
+    var badgeClass = upcomingCount > 0
+        ? "badge rounded-pill text-warning-emphasis bg-warning-subtle"
+        : "badge rounded-pill text-success-emphasis bg-success-subtle";
+    var badgeText = upcomingCount > 0 ? $"{upcomingCount} due soon" : "All clear";
 }
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Properties</h6>
-                <div class="display-6 fw-bold">@Model.PropertyCount</div>
-                <p class="text-muted small mb-0">Total units managed</p>
+<div class="row g-3 g-xl-4 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card metric-properties border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <span class="metric-icon">
+                    <i class="bi-buildings"></i>
+                </span>
+                <h6 class="metric-label">Properties</h6>
+                <div class="metric-value">@Model.PropertyCount</div>
+                <p class="metric-subtext mb-0">Total units managed</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Active Leases</h6>
-                <div class="display-6 fw-bold">@Model.ActiveLeaseCount</div>
-                <p class="text-muted small mb-0">Currently occupied</p>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card metric-leases border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <span class="metric-icon">
+                    <i class="bi-people-fill"></i>
+                </span>
+                <h6 class="metric-label">Active Leases</h6>
+                <div class="metric-value">@Model.ActiveLeaseCount</div>
+                <p class="metric-subtext mb-0">Currently occupied</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Monthly Rent</h6>
-                <div class="display-6 fw-bold">@Model.TotalMonthlyRent.ToString("C")</div>
-                <p class="text-muted small mb-0">Scheduled this month</p>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card metric-rent border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <span class="metric-icon">
+                    <i class="bi-cash-stack"></i>
+                </span>
+                <h6 class="metric-label">Monthly Rent</h6>
+                <div class="metric-value">@Model.TotalMonthlyRent.ToString("C")</div>
+                <p class="metric-subtext mb-0">Scheduled this month</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Payments Received</h6>
-                <div class="display-6 fw-bold text-success">@Model.PaymentsCollectedThisMonth.ToString("C")</div>
-                <p class="text-muted small mb-0">Collected this month</p>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card metric-card metric-payments border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <span class="metric-icon">
+                    <i class="bi-piggy-bank"></i>
+                </span>
+                <h6 class="metric-label">Payments Received</h6>
+                <div class="metric-value">@Model.PaymentsCollectedThisMonth.ToString("C")</div>
+                <p class="metric-subtext mb-0">Collected this month</p>
             </div>
         </div>
     </div>
 </div>
 
-<section class="card shadow-sm border-0">
-    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Upcoming lease expirations</h5>
-        <a class="btn btn-outline-primary btn-sm" asp-controller="Leases" asp-action="Create">New Lease</a>
+<section class="card shadow-sm border-0 overflow-hidden">
+    <div class="card-header border-0 bg-white px-4 py-4 upcoming-card-header d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3">
+        <div>
+            <h5 class="mb-1">Upcoming lease expirations</h5>
+            <p class="text-muted small mb-0">Monitor renewals in the next 60 days.</p>
+        </div>
+        <div class="ms-md-auto d-flex align-items-center gap-2">
+            <span class="@badgeClass">@badgeText</span>
+            <a class="btn btn-primary-soft btn-sm" asp-controller="Leases" asp-action="Create">
+                <i class="bi-plus-lg me-1"></i>
+                New Lease
+            </a>
+        </div>
     </div>
     <div class="card-body p-0">
         @if (Model.UpcomingRenewals.Count > 0)
         {
             <div class="table-responsive">
-                <table class="table mb-0 align-middle">
-                    <thead class="table-light">
+                <table class="table table-dashboard align-middle mb-0">
+                    <thead>
                         <tr>
-                            <th scope="col">Property</th>
-                            <th scope="col">Tenant</th>
+                            <th scope="col">Lease</th>
                             <th scope="col">End Date</th>
                             <th scope="col">Rent</th>
                             <th scope="col">Status</th>
@@ -64,13 +89,70 @@
                     <tbody>
                         @foreach (var lease in Model.UpcomingRenewals)
                         {
+                            var status = lease.Status ?? string.Empty;
+                            var statusLower = status.ToLowerInvariant();
+                            var statusClass = "status-badge";
+                            if (statusLower.Contains("active"))
+                            {
+                                statusClass += " status-badge-success";
+                            }
+                            else if (statusLower.Contains("pending") || statusLower.Contains("expiring"))
+                            {
+                                statusClass += " status-badge-warning";
+                            }
+                            else if (statusLower.Contains("expired") || statusLower.Contains("terminated"))
+                            {
+                                statusClass += " status-badge-danger";
+                            }
+
+                            int? daysRemaining = lease.EndDate.HasValue ? (lease.EndDate.Value - DateTime.Today).Days : null;
+                            string timelineMessage = string.Empty;
+                            string timelineClass = "text-muted small";
+
+                            if (daysRemaining.HasValue)
+                            {
+                                if (daysRemaining.Value < 0)
+                                {
+                                    var pastDueDays = System.Math.Abs(daysRemaining.Value);
+                                    timelineMessage = $"Past due by {pastDueDays} day{(pastDueDays == 1 ? string.Empty : "s")}";
+                                    timelineClass = "text-danger small";
+                                }
+                                else if (daysRemaining.Value == 0)
+                                {
+                                    timelineMessage = "Expires today";
+                                    timelineClass = "text-warning small";
+                                }
+                                else
+                                {
+                                    timelineMessage = $"{daysRemaining.Value} day{(daysRemaining.Value == 1 ? string.Empty : "s")} left";
+                                }
+                            }
+
                             <tr>
-                                <td>@lease.PropertyName</td>
-                                <td>@lease.TenantName</td>
-                                <td>@lease.EndDate?.ToString("MMM dd, yyyy")</td>
-                                <td>@lease.MonthlyRent.ToString("C")</td>
                                 <td>
-                                    <span class="badge bg-secondary">@lease.Status</span>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="table-icon bg-primary-subtle text-primary">
+                                            <i class="bi-building"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-semibold">@lease.PropertyName</div>
+                                            <div class="text-muted small">@lease.TenantName</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@lease.EndDate?.ToString("MMM dd, yyyy")</div>
+                                    @if (!string.IsNullOrEmpty(timelineMessage))
+                                    {
+                                        <div class="@timelineClass">@timelineMessage</div>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-success">@lease.MonthlyRent.ToString("C")</div>
+                                    <div class="text-muted small">Per month</div>
+                                </td>
+                                <td>
+                                    <span class="@statusClass">@lease.Status</span>
                                 </td>
                             </tr>
                         }
@@ -80,8 +162,12 @@
         }
         else
         {
-            <div class="p-4 text-center text-muted">
-                All leases are secured beyond the next 60 days.
+            <div class="empty-state p-5 text-center">
+                <div class="empty-state-icon mx-auto">
+                    <i class="bi-check2-circle"></i>
+                </div>
+                <h6 class="fw-semibold mb-1">All leases are secured beyond the next 60 days.</h6>
+                <p class="mb-0">You're all caught up on renewals.</p>
             </div>
         }
     </div>
