@@ -3,6 +3,180 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.ribbon {
+    background: linear-gradient(135deg, #2f64c4 0%, #1d3c78 100%);
+    color: #fff;
+    padding: 1.5rem 0 0.5rem;
+    position: relative;
+}
+
+.ribbon::after {
+    content: "";
+    position: absolute;
+    bottom: -24px;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    background: linear-gradient(135deg, rgba(47, 100, 196, 0.25), rgba(29, 60, 120, 0));
+    pointer-events: none;
+}
+
+.ribbon-header {
+    position: relative;
+    z-index: 1;
+}
+
+.ribbon-brand-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+}
+
+.ribbon-brand-link:hover,
+.ribbon-brand-link:focus {
+    color: #f5f8ff;
+    text-decoration: none;
+}
+
+.ribbon-tagline {
+    display: block;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.85rem;
+    margin-top: 0.1rem;
+}
+
+.ribbon-quick-actions .btn {
+    border-radius: 999px;
+    padding-inline: 1rem;
+}
+
+.ribbon-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.ribbon-group {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 1rem 1rem 0.6rem 0.6rem;
+    padding: 1rem;
+    min-width: 200px;
+    backdrop-filter: blur(3px);
+}
+
+.ribbon-group-title {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 0.75rem;
+}
+
+.ribbon-buttons {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.ribbon-button {
+    display: block;
+    background: #f5f7ff;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #1d3c78;
+    text-decoration: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.ribbon-button:hover,
+.ribbon-button:focus {
+    background: #fff;
+    box-shadow: 0 8px 18px rgba(29, 60, 120, 0.2);
+    transform: translateY(-2px);
+    color: #1a2f5c;
+}
+
+.ribbon-button-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.ribbon-button-desc {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(29, 60, 120, 0.7);
+}
+
+.ribbon-button.active {
+    background: linear-gradient(135deg, #ffffff 0%, #dde7ff 100%);
+    box-shadow: 0 10px 22px rgba(29, 60, 120, 0.25);
+    transform: translateY(-4px);
+}
+
+.ribbon-button.active .ribbon-button-label {
+    color: #163067;
+}
+
+.ribbon-button.active .ribbon-button-desc {
+    color: rgba(22, 48, 103, 0.75);
+}
+
+.ribbon-tabs::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 0 0 8px 8px;
+    margin-top: 1rem;
+}
+
+.ribbon + main {
+    margin-top: 2.5rem;
+}
+
+@media (max-width: 992px) {
+    .ribbon {
+        padding-inline: 1rem;
+    }
+
+    .ribbon-tabs {
+        gap: 1rem;
+    }
+
+    .ribbon-group {
+        min-width: auto;
+        flex: 1 1 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ribbon {
+        padding-bottom: 1.25rem;
+    }
+
+    .ribbon-quick-actions {
+        display: none !important;
+    }
+
+    .ribbon-tabs {
+        flex-direction: column;
+    }
+
+    .ribbon-group {
+        border-radius: 1rem;
+    }
+}
+
 .navbar-brand {
     font-weight: 600;
     letter-spacing: 0.5px;
