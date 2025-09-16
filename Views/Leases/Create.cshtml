@@ -1,0 +1,56 @@
+@model Lease
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Add Lease";
+    var properties = ViewData["PropertyId"] as SelectList;
+    var tenants = ViewData["TenantId"] as SelectList;
+}
+
+<h1 class="h3 mb-3">Add Lease</h1>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="PropertyId" class="form-label"></label>
+                    <select asp-for="PropertyId" class="form-select" asp-items="properties"></select>
+                    <span asp-validation-for="PropertyId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TenantId" class="form-label"></label>
+                    <select asp-for="TenantId" class="form-select" asp-items="tenants"></select>
+                    <span asp-validation-for="TenantId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="StartDate" class="form-label"></label>
+                    <input asp-for="StartDate" class="form-control" type="date" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="EndDate" class="form-label"></label>
+                    <input asp-for="EndDate" class="form-control" type="date" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="MonthlyRent" class="form-label"></label>
+                    <input asp-for="MonthlyRent" class="form-control" />
+                    <span asp-validation-for="MonthlyRent" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Status" class="form-label"></label>
+                    <input asp-for="Status" class="form-control" />
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mt-4 d-flex justify-content-between">
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Lease</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

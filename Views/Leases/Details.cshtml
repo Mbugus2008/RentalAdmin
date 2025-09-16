@@ -1,0 +1,82 @@
+@model Lease
+@{
+    ViewData["Title"] = "Lease Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3">Lease for @Model.Property?.Name</h1>
+    <div>
+        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a class="btn btn-secondary" asp-action="Index">Back</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white fw-semibold">Tenant</div>
+            <div class="card-body">
+                <p class="mb-1">@Model.Tenant?.FullName</p>
+                <p class="mb-1 text-muted">@Model.Tenant?.Email</p>
+                <p class="mb-0 text-muted">@Model.Tenant?.Phone</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white fw-semibold">Term</div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Start:</strong> @Model.StartDate.ToString("MMM dd, yyyy")</p>
+                <p class="mb-0"><strong>End:</strong> @Model.EndDate?.ToString("MMM dd, yyyy")</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white fw-semibold">Financials</div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Rent:</strong> @Model.MonthlyRent.ToString("C")</p>
+                <p class="mb-0"><strong>Status:</strong> <span class="badge bg-secondary">@Model.Status</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="card shadow-sm border-0">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Payments</span>
+        <a class="btn btn-outline-primary btn-sm" asp-controller="Payments" asp-action="Create">Record Payment</a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Payments.Count > 0)
+        {
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var payment in Model.Payments.OrderByDescending(p => p.PaymentDate))
+                        {
+                            <tr>
+                                <td>@payment.PaymentDate.ToString("MMM dd, yyyy")</td>
+                                <td>@payment.Amount.ToString("C")</td>
+                                <td>@payment.Method</td>
+                                <td>@payment.Notes</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-4 text-center text-muted">No payments recorded yet.</div>
+        }
+    </div>
+</section>

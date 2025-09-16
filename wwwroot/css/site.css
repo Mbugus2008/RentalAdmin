@@ -1,0 +1,33 @@
+body {
+    background-color: #f6f7fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    border-radius: 0.75rem;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.9rem 1rem;
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #2f64c4;
+    border-color: #2f64c4;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #244d96;
+    border-color: #244d96;
+}
+
+.badge.bg-secondary {
+    background-color: #4c6ef5 !important;
+}
