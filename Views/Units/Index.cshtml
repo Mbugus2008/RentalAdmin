@@ -5,11 +5,22 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">Units</h1>
-    @if (Model.SelectedPropertyId.HasValue)
+    @if (Model.Properties.Count > 0)
     {
-        <a class="btn btn-primary" asp-action="Create" asp-route-propertyId="@Model.SelectedPropertyId.Value">Add Unit</a>
+        if (Model.SelectedPropertyId.HasValue)
+        {
+            <a class="btn btn-primary" asp-action="Create" asp-route-propertyId="@Model.SelectedPropertyId.Value">Add Unit</a>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-action="Create">Add Unit</a>
+        }
     }
-}
+    else
+    {
+        <button class="btn btn-primary" type="button" disabled>Add Unit</button>
+    }
+</div>
 
 <div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
@@ -34,9 +45,9 @@
                 </div>
             }
             <div class="col-12 col-md text-md-end">
-                @if (!Model.SelectedPropertyId.HasValue)
+                @if (Model.Properties.Count == 0)
                 {
-                    <span class="text-muted small">Select a property to add a new unit.</span>
+                    <span class="text-muted small">Add a property to start tracking units.</span>
                 }
             </div>
         </form>
@@ -55,9 +66,7 @@ else
                 <thead class="table-light">
                     <tr>
                         <th>Property</th>
-                        <th>Unit</th>
-                        <th>Type</th>
-                        <th>Notes</th>
+                        <th>Unit type</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -69,18 +78,7 @@ else
                                 <div class="fw-semibold">@unit.Property?.Name</div>
                                 <div class="text-muted small">@unit.Property?.Address</div>
                             </td>
-                            <td>@unit.UnitNumber</td>
                             <td>@unit.UnitType</td>
-                            <td class="text-muted">
-                                @if (!string.IsNullOrWhiteSpace(unit.Notes))
-                                {
-                                    @unit.Notes
-                                }
-                                else
-                                {
-                                    <span class="fst-italic">No notes</span>
-                                }
-                            </td>
                             <td class="text-end">
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@unit.Id">View</a>

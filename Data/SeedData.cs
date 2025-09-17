@@ -137,37 +137,27 @@ public static class SeedData
             new()
             {
                 Property = properties[0],
-                UnitNumber = "101",
-                UnitType = "1 Bedroom",
-                Notes = "Ground-floor home with patio access."
+                UnitType = "1 Bedroom"
             },
             new()
             {
                 Property = properties[0],
-                UnitNumber = "201",
-                UnitType = "2 Bedroom",
-                Notes = "Corner layout with ample storage."
+                UnitType = "2 Bedroom"
             },
             new()
             {
                 Property = properties[0],
-                UnitNumber = "302",
-                UnitType = "Studio",
-                Notes = "Open concept with skyline view."
+                UnitType = "Studio"
             },
             new()
             {
                 Property = properties[1],
-                UnitNumber = "A1",
-                UnitType = "3 Bedroom Townhome",
-                Notes = "Includes attached garage."
+                UnitType = "3 Bedroom"
             },
             new()
             {
                 Property = properties[1],
-                UnitNumber = "B2",
-                UnitType = "2 Bedroom Townhome",
-                Notes = "Near lakeside walking trail."
+                UnitType = "2 Bedroom"
             }
         };
 

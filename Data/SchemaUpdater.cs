@@ -20,9 +20,7 @@ BEGIN
     (
         [Id] INT IDENTITY(1,1) NOT NULL,
         [PropertyId] INT NOT NULL,
-        [UnitNumber] NVARCHAR(60) NOT NULL,
         [UnitType] NVARCHAR(100) NOT NULL,
-        [Notes] NVARCHAR(200) NULL,
         CONSTRAINT [PK_Units] PRIMARY KEY ([Id]),
         CONSTRAINT [FK_Units_Properties_PropertyId] FOREIGN KEY ([PropertyId]) REFERENCES [dbo].[Properties]([Id]) ON DELETE CASCADE
     );

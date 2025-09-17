@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Rental.Data;
 using Rental.Models;
@@ -30,7 +32,7 @@ public class UnitsController : Controller
 
         var units = await unitsQuery
             .OrderBy(u => u.Property!.Name)
-            .ThenBy(u => u.UnitNumber)
+            .ThenBy(u => u.UnitType)
             .ToListAsync();
 
         var properties = await _context.Properties
@@ -70,41 +72,47 @@ public class UnitsController : Controller
 
     public async Task<IActionResult> Create(int? propertyId)
     {
-        if (propertyId == null)
+        var properties = await GetPropertiesAsync();
+
+        int? selectedPropertyId = null;
+        if (properties.Count > 0)
         {
-            return RedirectToAction(nameof(Index));
+            selectedPropertyId = propertyId.HasValue && properties.Any(p => p.Id == propertyId.Value)
+                ? propertyId.Value
+                : properties.First().Id;
         }
 
-        var property = await _context.Properties.FindAsync(propertyId.Value);
-        if (property == null)
+        PopulatePropertyOptions(properties, selectedPropertyId);
+
+        var unit = new Unit();
+        if (selectedPropertyId.HasValue)
         {
-            return NotFound();
+            unit.PropertyId = selectedPropertyId.Value;
         }
 
-        ViewData["PropertyName"] = property.Name;
-        return View(new Unit { PropertyId = property.Id });
+        return View(unit);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Unit unit)
     {
-        var property = await _context.Properties.FindAsync(unit.PropertyId);
-        if (property == null)
+        if (!await _context.Properties.AnyAsync(p => p.Id == unit.PropertyId))
         {
-            return NotFound();
+            ModelState.AddModelError(nameof(Unit.PropertyId), "Please select a valid property.");
         }
 
         if (!ModelState.IsValid)
         {
-            ViewData["PropertyName"] = property.Name;
+            var properties = await GetPropertiesAsync();
+            PopulatePropertyOptions(properties, unit.PropertyId);
             return View(unit);
         }
 
         _context.Units.Add(unit);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(PropertiesController.Details), "Properties", new { id = unit.PropertyId });
+        return RedirectToAction(nameof(Details), new { id = unit.Id });
     }
 
     public async Task<IActionResult> Edit(int? id)
@@ -115,7 +123,7 @@ public class UnitsController : Controller
         }
 
         var unit = await _context.Units
-            .Include(u => u.Property)
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id);
 
         if (unit == null)
@@ -123,7 +131,9 @@ public class UnitsController : Controller
             return NotFound();
         }
 
-        ViewData["PropertyName"] = unit.Property?.Name;
+        var properties = await GetPropertiesAsync();
+        PopulatePropertyOptions(properties, unit.PropertyId);
+
         return View(unit);
     }
 
@@ -136,15 +146,15 @@ public class UnitsController : Controller
             return NotFound();
         }
 
-        var property = await _context.Properties.FindAsync(unit.PropertyId);
-        if (property == null)
+        if (!await _context.Properties.AnyAsync(p => p.Id == unit.PropertyId))
         {
-            return NotFound();
+            ModelState.AddModelError(nameof(Unit.PropertyId), "Please select a valid property.");
         }
 
         if (!ModelState.IsValid)
         {
-            ViewData["PropertyName"] = property.Name;
+            var properties = await GetPropertiesAsync();
+            PopulatePropertyOptions(properties, unit.PropertyId);
             return View(unit);
         }
 
@@ -154,13 +164,12 @@ public class UnitsController : Controller
             return NotFound();
         }
 
-        existingUnit.UnitNumber = unit.UnitNumber;
+        existingUnit.PropertyId = unit.PropertyId;
         existingUnit.UnitType = unit.UnitType;
-        existingUnit.Notes = unit.Notes;
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(PropertiesController.Details), "Properties", new { id = unit.PropertyId });
+        return RedirectToAction(nameof(Details), new { id = existingUnit.Id });
     }
 
     [HttpPost]
@@ -185,5 +194,19 @@ public class UnitsController : Controller
         }
 
         return RedirectToAction(nameof(PropertiesController.Details), "Properties", new { id = propertyId });
+    }
+
+    private async Task<List<Property>> GetPropertiesAsync()
+    {
+        return await _context.Properties
+            .AsNoTracking()
+            .OrderBy(p => p.Name)
+            .ToListAsync();
+    }
+
+    private void PopulatePropertyOptions(IEnumerable<Property> properties, int? selectedPropertyId)
+    {
+        ViewData["PropertyOptions"] = new SelectList(properties, nameof(Property.Id), nameof(Property.Name), selectedPropertyId);
+        ViewData["HasProperties"] = properties.Any();
     }
 }
