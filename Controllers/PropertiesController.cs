@@ -20,6 +20,8 @@ public class PropertiesController : Controller
     {
         var properties = await _context.Properties
             .Include(p => p.Leases)
+            .Include(p => p.Units)
+            .AsSplitQuery()
             .OrderBy(p => p.Name)
             .ToListAsync();
         return View(properties);
@@ -33,8 +35,10 @@ public class PropertiesController : Controller
         }
 
         var property = await _context.Properties
+            .Include(p => p.Units)
             .Include(p => p.Leases)
                 .ThenInclude(l => l.Tenant)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(m => m.Id == id);
         if (property == null)
         {
@@ -93,9 +97,22 @@ public class PropertiesController : Controller
             return View(property);
         }
 
+        var existingProperty = await _context.Properties.FindAsync(id);
+        if (existingProperty == null)
+        {
+            return NotFound();
+        }
+
+        existingProperty.Name = property.Name;
+        existingProperty.TotalUnits = property.TotalUnits;
+        existingProperty.Address = property.Address;
+        existingProperty.City = property.City;
+        existingProperty.State = property.State;
+        existingProperty.ZipCode = property.ZipCode;
+        existingProperty.Notes = property.Notes;
+
         try
         {
-            _context.Update(property);
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)

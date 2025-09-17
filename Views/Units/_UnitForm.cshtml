@@ -1,0 +1,31 @@
+@using System.Linq
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model Unit
+
+@{
+    var propertyOptions = ViewData["PropertyOptions"] as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+    var hasProperties = ViewData["HasProperties"] as bool? ?? propertyOptions.Any();
+}
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="PropertyId" class="form-label"></label>
+        <select asp-for="PropertyId" class="form-select" asp-items="propertyOptions" @(hasProperties ? string.Empty : "disabled")>
+            <option value="">Select a property</option>
+        </select>
+        <span asp-validation-for="PropertyId" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="UnitType" class="form-label"></label>
+        <input asp-for="UnitType" class="form-control" list="unitTypeOptions" placeholder="e.g. 1 Bedroom" />
+        <datalist id="unitTypeOptions">
+            <option value="Studio"></option>
+            <option value="1 Bedroom"></option>
+            <option value="2 Bedroom"></option>
+            <option value="3 Bedroom"></option>
+            <option value="4 Bedroom"></option>
+            <option value="Townhome"></option>
+        </datalist>
+        <span asp-validation-for="UnitType" class="text-danger"></span>
+    </div>
+</div>

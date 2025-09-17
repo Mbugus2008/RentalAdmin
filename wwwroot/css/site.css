@@ -1,33 +1,433 @@
-body {
-    background-color: #f6f7fb;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+:root {
+    --office-accent: #2b579a;
+    --office-accent-dark: #1f3f7d;
+    --office-accent-light: #e8f0ff;
+    --office-accent-lighter: #f5f7ff;
+    --office-border: #d2dcf2;
+    --office-border-strong: #b7c6e7;
+    --office-text: #1b2559;
+    --office-muted: #66739b;
+    --office-panel-shadow: rgba(23, 54, 129, 0.18);
+    --office-quick-bg: rgba(255, 255, 255, 0.14);
 }
 
-.navbar-brand {
+body {
+    background: linear-gradient(180deg, #f4f6fc 0%, #eef1fb 45%, #f7f9ff 100%);
+    color: var(--office-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.office-shell {
+    background: linear-gradient(135deg, #284fa9 0%, #1b367c 100%);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(14, 38, 110, 0.35);
+    box-shadow: 0 24px 48px rgba(17, 42, 110, 0.35);
+}
+
+.office-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.28) 0%, transparent 60%),
+        radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.18) 0%, transparent 58%),
+        radial-gradient(circle at 40% 120%, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.office-shell .container-fluid {
+    position: relative;
+    z-index: 1;
+    padding-top: 0.85rem;
+    padding-bottom: 0.6rem;
+}
+
+.office-titlebar {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.office-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.office-quick-access {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--office-quick-bg);
+    border-radius: 999px;
+    padding: 0.25rem 0.45rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.office-qa-button {
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 0.45rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.office-qa-button i {
+    font-size: 1rem;
+}
+
+.office-qa-button:hover,
+.office-qa-button:focus {
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.office-qa-button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.office-qa-button.is-active {
+    background: rgba(255, 255, 255, 0.32);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), 0 8px 18px rgba(15, 36, 98, 0.35);
+}
+
+.office-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.office-brand__name {
+    font-size: 1.4rem;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    color: #fff;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+}
+
+.office-brand__name:hover,
+.office-brand__name:focus {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.office-brand__subtitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.office-titlebar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.office-status {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.office-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.8rem;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.office-status-chip i {
+    font-size: 0.9rem;
+}
+
+.office-tabrow {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.45rem;
+    padding: 0.25rem 0.4rem 0;
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 0.75rem 0.75rem 0 0;
+    backdrop-filter: blur(8px);
+}
+
+.office-file-button {
+    background: #1f4fa3;
+    color: #fff;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 0.55rem 0.55rem 0 0;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(26, 63, 150, 0.35);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.office-file-button:hover,
+.office-file-button:focus {
+    text-decoration: none;
+    background: #1a448f;
+    transform: translateY(-1px);
+}
+
+.office-tab {
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.78);
+    font-weight: 600;
+    padding: 0.45rem 0.85rem;
+    border-radius: 0.55rem 0.55rem 0 0;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.office-tab:hover,
+.office-tab:focus {
+    color: #fff;
+}
+
+.office-tab:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.office-tab.is-active {
+    background: #ffffff;
+    color: var(--office-accent);
+    box-shadow: 0 -1px 0 0 #ffffff, 0 -8px 18px rgba(24, 52, 120, 0.25);
+}
+
+.office-ribbon-body {
+    background: #ffffff;
+    border-radius: 0 0 0.85rem 0.85rem;
+    border: 1px solid rgba(23, 46, 110, 0.15);
+    border-top: none;
+    padding: 0.95rem 0.9rem 0.85rem;
+    box-shadow: 0 24px 44px var(--office-panel-shadow);
+}
+
+.office-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: stretch;
+}
+
+.office-panel[hidden] {
+    display: none;
+}
+
+.office-group {
+    flex: 1 1 220px;
+    min-width: 220px;
+    background: linear-gradient(180deg, var(--office-accent-lighter) 0%, #ffffff 65%);
+    border-radius: 1rem;
+    border: 1px solid var(--office-border);
+    box-shadow: 0 16px 32px rgba(22, 52, 125, 0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem;
+    gap: 0.7rem;
+}
+
+.office-group-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.75rem;
+    justify-items: center;
+}
+
+.office-group-footer {
+    border-top: 1px solid var(--office-border);
+    padding-top: 0.4rem;
+    text-align: center;
+}
+
+.office-group-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--office-muted);
+}
+
+.office-command {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.35rem;
+    color: var(--office-text);
+    text-decoration: none;
+    padding: 0.45rem 0.55rem 0.55rem;
+    border-radius: 0.85rem;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    min-width: 100px;
+}
+
+.office-command--large .office-command-label {
+    font-size: 0.92rem;
+}
+
+.office-command:hover,
+.office-command:focus {
+    text-decoration: none;
+    background: var(--office-accent-light);
+    border-color: var(--office-border-strong);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 36px rgba(23, 54, 129, 0.2);
+}
+
+.office-command:focus-visible {
+    outline: 2px solid var(--office-accent);
+    outline-offset: 3px;
+}
+
+.office-command.is-current {
+    background: rgba(43, 87, 154, 0.18);
+    border-color: rgba(43, 87, 154, 0.45);
+    box-shadow: 0 0 0 1px rgba(43, 87, 154, 0.45), 0 16px 28px rgba(26, 60, 130, 0.2);
+}
+
+.office-command-icon {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.7rem;
+    background: linear-gradient(180deg, rgba(43, 87, 154, 0.12) 0%, rgba(43, 87, 154, 0.3) 100%);
+    color: var(--office-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: inset 0 0 0 1px rgba(43, 87, 154, 0.12);
+}
+
+.office-command-label {
+    font-weight: 600;
+}
+
+.office-command-caption {
+    font-size: 0.78rem;
+    line-height: 1.3;
+    color: var(--office-muted);
+}
+
+footer {
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .card {
-    border-radius: 0.75rem;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(17, 38, 90, 0.1);
 }
 
 .table > :not(caption) > * > * {
-    padding: 0.9rem 1rem;
+    padding: 0.85rem 1rem;
     vertical-align: middle;
 }
 
 .btn-primary {
-    background-color: #2f64c4;
-    border-color: #2f64c4;
+    background-color: #2b579a;
+    border-color: #2b579a;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color: #244d96;
-    border-color: #244d96;
+    background-color: #1f4176;
+    border-color: #1f4176;
 }
 
 .badge.bg-secondary {
     background-color: #4c6ef5 !important;
+}
+
+@media (max-width: 992px) {
+    .office-shell .container-fluid {
+        padding-top: 1rem;
+    }
+
+    .office-tabrow {
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+    }
+
+    .office-tab {
+        flex: 0 0 auto;
+    }
+
+    .office-group {
+        flex: 1 1 260px;
+    }
+}
+
+@media (max-width: 768px) {
+    .office-titlebar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .office-titlebar-left,
+    .office-titlebar-right {
+        width: 100%;
+    }
+
+    .office-group-body {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .office-shell .container-fluid {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    .office-ribbon-body {
+        padding: 1.2rem 0.85rem 1rem;
+    }
+
+    .office-group {
+        min-width: 100%;
+    }
+
+    .office-group-body {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .office-qa-button,
+    .office-tab,
+    .office-command {
+        transition: none;
+    }
 }

@@ -26,6 +26,7 @@ public class HomeController : Controller
         var viewModel = new DashboardViewModel
         {
             PropertyCount = await _context.Properties.CountAsync(),
+            TenantCount = await _context.Tenants.CountAsync(),
             ActiveLeaseCount = await _context.Leases.CountAsync(l => l.EndDate == null || l.EndDate >= today),
             TotalMonthlyRent = await _context.Leases
                 .Select(l => (decimal?)l.MonthlyRent)
@@ -33,21 +34,7 @@ public class HomeController : Controller
             PaymentsCollectedThisMonth = await _context.Payments
                 .Where(p => p.PaymentDate >= monthStart && p.PaymentDate < nextMonth)
                 .Select(p => (decimal?)p.Amount)
-                .SumAsync() ?? 0m,
-            UpcomingRenewals = await _context.Leases
-                .Include(l => l.Property)
-                .Include(l => l.Tenant)
-                .Where(l => l.EndDate != null && l.EndDate >= today && l.EndDate <= today.AddMonths(2))
-                .OrderBy(l => l.EndDate)
-                .Select(l => new DashboardViewModel.LeaseSummary
-                {
-                    PropertyName = l.Property!.Name,
-                    TenantName = l.Tenant!.FullName,
-                    EndDate = l.EndDate,
-                    MonthlyRent = l.MonthlyRent,
-                    Status = l.Status
-                })
-                .ToListAsync()
+                .SumAsync() ?? 0m
         };
 
         return View(viewModel);

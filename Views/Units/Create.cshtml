@@ -1,0 +1,36 @@
+@model Unit
+@{
+    ViewData["Title"] = "Add Unit";
+    var hasProperties = ViewData["HasProperties"] as bool? ?? false;
+}
+
+<h1 class="h3 mb-3">Add Unit</h1>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        @if (!hasProperties)
+        {
+            <div class="alert alert-warning" role="status">
+                Add a property before creating units.
+            </div>
+        }
+        <form asp-action="Create" method="post">
+            <partial name="_UnitForm" />
+            <div class="mt-4 d-flex justify-content-between">
+                @if (Model.PropertyId > 0)
+                {
+                    <a class="btn btn-secondary" asp-controller="Properties" asp-action="Details" asp-route-id="@Model.PropertyId">Cancel</a>
+                }
+                else
+                {
+                    <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                }
+                <button type="submit" class="btn btn-primary" @(hasProperties ? string.Empty : "disabled")>Save Unit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

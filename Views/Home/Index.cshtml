@@ -4,16 +4,25 @@
 }
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
+    <div class="col-md-6 col-xl-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h6 class="text-uppercase text-muted">Properties</h6>
                 <div class="display-6 fw-bold">@Model.PropertyCount</div>
-                <p class="text-muted small mb-0">Total units managed</p>
+                <p class="text-muted small mb-0">Properties in portfolio</p>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6 col-xl-3">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase text-muted">Tenants</h6>
+                <div class="display-6 fw-bold">@Model.TenantCount</div>
+                <p class="text-muted small mb-0">Active residents</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h6 class="text-uppercase text-muted">Active Leases</h6>
@@ -22,7 +31,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6 col-xl-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h6 class="text-uppercase text-muted">Monthly Rent</h6>
@@ -31,7 +40,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-6 col-xl-3">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-body">
                 <h6 class="text-uppercase text-muted">Payments Received</h6>
@@ -41,48 +50,3 @@
         </div>
     </div>
 </div>
-
-<section class="card shadow-sm border-0">
-    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Upcoming lease expirations</h5>
-        <a class="btn btn-outline-primary btn-sm" asp-controller="Leases" asp-action="Create">New Lease</a>
-    </div>
-    <div class="card-body p-0">
-        @if (Model.UpcomingRenewals.Count > 0)
-        {
-            <div class="table-responsive">
-                <table class="table mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">Property</th>
-                            <th scope="col">Tenant</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">Rent</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var lease in Model.UpcomingRenewals)
-                        {
-                            <tr>
-                                <td>@lease.PropertyName</td>
-                                <td>@lease.TenantName</td>
-                                <td>@lease.EndDate?.ToString("MMM dd, yyyy")</td>
-                                <td>@lease.MonthlyRent.ToString("C")</td>
-                                <td>
-                                    <span class="badge bg-secondary">@lease.Status</span>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="p-4 text-center text-muted">
-                All leases are secured beyond the next 60 days.
-            </div>
-        }
-    </div>
-</section>

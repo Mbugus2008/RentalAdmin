@@ -29,7 +29,10 @@
                             <div>@property.Address</div>
                             <div class="text-muted small">@property.City, @property.State @property.ZipCode</div>
                         </td>
-                        <td>@property.Units</td>
+                        <td>
+                            <div class="fw-semibold">@property.Units.Count</div>
+                            <div class="text-muted small">of @property.TotalUnits planned</div>
+                        </td>
                         <td>@property.Leases.Count</td>
                         <td class="text-end">
                             <div class="btn-group">

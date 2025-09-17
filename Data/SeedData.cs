@@ -26,7 +26,7 @@ public static class SeedData
                 City = "Springfield",
                 State = "IL",
                 ZipCode = "62704",
-                Units = 12,
+                TotalUnits = 3,
                 Notes = "Downtown mid-rise with renovated kitchens."
             },
             new()
@@ -36,7 +36,7 @@ public static class SeedData
                 City = "Madison",
                 State = "WI",
                 ZipCode = "53703",
-                Units = 8,
+                TotalUnits = 2,
                 Notes = "Townhome community near the lake trail."
             }
         };
@@ -132,10 +132,40 @@ public static class SeedData
             }
         };
 
+        var units = new List<Unit>
+        {
+            new()
+            {
+                Property = properties[0],
+                UnitType = "1 Bedroom"
+            },
+            new()
+            {
+                Property = properties[0],
+                UnitType = "2 Bedroom"
+            },
+            new()
+            {
+                Property = properties[0],
+                UnitType = "Studio"
+            },
+            new()
+            {
+                Property = properties[1],
+                UnitType = "3 Bedroom"
+            },
+            new()
+            {
+                Property = properties[1],
+                UnitType = "2 Bedroom"
+            }
+        };
+
         await context.Properties.AddRangeAsync(properties);
         await context.Tenants.AddRangeAsync(tenants);
         await context.Leases.AddRangeAsync(leases);
         await context.Payments.AddRangeAsync(payments);
+        await context.Units.AddRangeAsync(units);
 
         await context.SaveChangesAsync();
     }
