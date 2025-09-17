@@ -13,6 +13,7 @@ public class RentalContext : DbContext
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<Lease> Leases => Set<Lease>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<Unit> Units => Set<Unit>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,12 @@ public class RentalContext : DbContext
             .HasMany(p => p.Leases)
             .WithOne(l => l.Property!)
             .HasForeignKey(l => l.PropertyId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Property>()
+            .HasMany(p => p.Units)
+            .WithOne(u => u.Property!)
+            .HasForeignKey(u => u.PropertyId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Tenant>()

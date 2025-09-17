@@ -1,0 +1,19 @@
+@model Unit
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="UnitNumber" class="form-label"></label>
+        <input asp-for="UnitNumber" class="form-control" />
+        <span asp-validation-for="UnitNumber" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="UnitType" class="form-label"></label>
+        <input asp-for="UnitType" class="form-control" />
+        <span asp-validation-for="UnitType" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+</div>

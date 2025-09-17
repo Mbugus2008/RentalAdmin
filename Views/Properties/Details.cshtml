@@ -18,7 +18,7 @@
             <div class="card-body">
                 <p class="mb-1">@Model.Address</p>
                 <p class="mb-1">@Model.City, @Model.State @Model.ZipCode</p>
-                <p class="mb-0 text-muted">Units: @Model.Units</p>
+                <p class="mb-0 text-muted">Total units planned: @Model.TotalUnits</p>
             </div>
         </div>
     </div>
@@ -38,6 +38,61 @@
         </div>
     </div>
 </div>
+
+<section class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">Units (@Model.Units.Count of @Model.TotalUnits)</span>
+        <a class="btn btn-outline-primary btn-sm" asp-controller="Units" asp-action="Create" asp-route-propertyId="@Model.Id">Add Unit</a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Units.Any())
+        {
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Unit</th>
+                            <th>Type</th>
+                            <th>Notes</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var unit in Model.Units.OrderBy(u => u.UnitNumber))
+                        {
+                            <tr>
+                                <td>@unit.UnitNumber</td>
+                                <td>@unit.UnitType</td>
+                                <td class="text-muted">
+                                    @if (!string.IsNullOrWhiteSpace(unit.Notes))
+                                    {
+                                        @unit.Notes
+                                    }
+                                    else
+                                    {
+                                        <span class="fst-italic">No notes</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a class="btn btn-outline-secondary" asp-controller="Units" asp-action="Edit" asp-route-id="@unit.Id">Edit</a>
+                                        <form asp-controller="Units" asp-action="Delete" asp-route-id="@unit.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Delete this unit?');">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-4 text-center text-muted">No units configured for this property yet.</div>
+        }
+    </div>
+</section>
 
 <section class="card shadow-sm border-0">
     <div class="card-header bg-white d-flex justify-content-between align-items-center">

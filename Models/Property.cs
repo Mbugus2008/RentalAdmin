@@ -25,12 +25,14 @@ public class Property
     [StringLength(20)]
     public string? ZipCode { get; set; }
 
+    [Display(Name = "Total Units")]
     [Range(1, 500)]
-    public int Units { get; set; }
+    public int TotalUnits { get; set; }
 
     [Display(Name = "Notes")]
     [DataType(DataType.MultilineText)]
     public string? Notes { get; set; }
 
     public ICollection<Lease> Leases { get; set; } = new List<Lease>();
+    public ICollection<Unit> Units { get; set; } = new List<Unit>();
 }

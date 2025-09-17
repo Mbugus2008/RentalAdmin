@@ -1,0 +1,28 @@
+@model Unit
+@{
+    ViewData["Title"] = "Edit Unit";
+    var propertyName = ViewData["PropertyName"] as string ?? "Property";
+}
+
+<h1 class="h3 mb-3">Edit Unit</h1>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="alert alert-info small" role="status">
+            Updating details for <strong>@propertyName</strong>.
+        </div>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="PropertyId" />
+            <partial name="_UnitForm" />
+            <div class="mt-4 d-flex justify-content-between">
+                <a class="btn btn-secondary" asp-controller="Properties" asp-action="Details" asp-route-id="@Model.PropertyId">Cancel</a>
+                <button type="submit" class="btn btn-primary">Update Unit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
