@@ -1,8 +1,10 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rental.Data;
 using Rental.Models;
+using Rental.ViewModels;
 
 namespace Rental.Controllers;
 
@@ -15,16 +17,72 @@ public class UnitsController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Create(int propertyId)
+    public async Task<IActionResult> Index(int? propertyId)
     {
-        var property = await _context.Properties.FindAsync(propertyId);
+        var unitsQuery = _context.Units
+            .Include(u => u.Property)
+            .AsNoTracking();
+
+        if (propertyId.HasValue)
+        {
+            unitsQuery = unitsQuery.Where(u => u.PropertyId == propertyId.Value);
+        }
+
+        var units = await unitsQuery
+            .OrderBy(u => u.Property!.Name)
+            .ThenBy(u => u.UnitNumber)
+            .ToListAsync();
+
+        var properties = await _context.Properties
+            .AsNoTracking()
+            .OrderBy(p => p.Name)
+            .ToListAsync();
+
+        var viewModel = new UnitIndexViewModel
+        {
+            Units = units,
+            Properties = properties,
+            SelectedPropertyId = propertyId
+        };
+
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var unit = await _context.Units
+            .Include(u => u.Property)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (unit == null)
+        {
+            return NotFound();
+        }
+
+        return View(unit);
+    }
+
+    public async Task<IActionResult> Create(int? propertyId)
+    {
+        if (propertyId == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        var property = await _context.Properties.FindAsync(propertyId.Value);
         if (property == null)
         {
             return NotFound();
         }
 
         ViewData["PropertyName"] = property.Name;
-        return View(new Unit { PropertyId = propertyId });
+        return View(new Unit { PropertyId = property.Id });
     }
 
     [HttpPost]
@@ -107,17 +165,24 @@ public class UnitsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id, bool redirectToUnitsIndex = false)
     {
         var unit = await _context.Units.FindAsync(id);
         if (unit == null)
         {
-            return RedirectToAction(nameof(PropertiesController.Index), "Properties");
+            return redirectToUnitsIndex
+                ? RedirectToAction(nameof(Index))
+                : RedirectToAction(nameof(PropertiesController.Index), "Properties");
         }
 
         var propertyId = unit.PropertyId;
         _context.Units.Remove(unit);
         await _context.SaveChangesAsync();
+
+        if (redirectToUnitsIndex)
+        {
+            return RedirectToAction(nameof(Index), new { propertyId });
+        }
 
         return RedirectToAction(nameof(PropertiesController.Details), "Properties", new { id = propertyId });
     }

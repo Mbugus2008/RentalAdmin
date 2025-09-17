@@ -8,8 +8,12 @@
 
 <div class="card shadow-sm border-0">
     <div class="card-body">
-        <div class="alert alert-info small" role="status">
-            Updating details for <strong>@propertyName</strong>.
+        <div class="alert alert-info small d-flex justify-content-between align-items-center" role="status">
+            <span>Updating details for <strong>@propertyName</strong>.</span>
+            @if (Model.PropertyId > 0)
+            {
+                <a class="alert-link" asp-controller="Properties" asp-action="Details" asp-route-id="@Model.PropertyId">View property</a>
+            }
         </div>
         <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="Id" />

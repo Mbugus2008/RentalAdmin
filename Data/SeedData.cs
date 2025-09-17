@@ -26,7 +26,7 @@ public static class SeedData
                 City = "Springfield",
                 State = "IL",
                 ZipCode = "62704",
-                TotalUnits = 12,
+                TotalUnits = 3,
                 Notes = "Downtown mid-rise with renovated kitchens."
             },
             new()
@@ -36,7 +36,7 @@ public static class SeedData
                 City = "Madison",
                 State = "WI",
                 ZipCode = "53703",
-                TotalUnits = 8,
+                TotalUnits = 2,
                 Notes = "Townhome community near the lake trail."
             }
         };
@@ -132,10 +132,50 @@ public static class SeedData
             }
         };
 
+        var units = new List<Unit>
+        {
+            new()
+            {
+                Property = properties[0],
+                UnitNumber = "101",
+                UnitType = "1 Bedroom",
+                Notes = "Ground-floor home with patio access."
+            },
+            new()
+            {
+                Property = properties[0],
+                UnitNumber = "201",
+                UnitType = "2 Bedroom",
+                Notes = "Corner layout with ample storage."
+            },
+            new()
+            {
+                Property = properties[0],
+                UnitNumber = "302",
+                UnitType = "Studio",
+                Notes = "Open concept with skyline view."
+            },
+            new()
+            {
+                Property = properties[1],
+                UnitNumber = "A1",
+                UnitType = "3 Bedroom Townhome",
+                Notes = "Includes attached garage."
+            },
+            new()
+            {
+                Property = properties[1],
+                UnitNumber = "B2",
+                UnitType = "2 Bedroom Townhome",
+                Notes = "Near lakeside walking trail."
+            }
+        };
+
         await context.Properties.AddRangeAsync(properties);
         await context.Tenants.AddRangeAsync(tenants);
         await context.Leases.AddRangeAsync(leases);
         await context.Payments.AddRangeAsync(payments);
+        await context.Units.AddRangeAsync(units);
 
         await context.SaveChangesAsync();
     }

@@ -18,6 +18,7 @@
     var activeTab = controllerKey switch
     {
         "properties" => "portfolio",
+        "units" => "portfolio",
         "tenants" => "people",
         "leases" => "operations",
         "payments" => "operations",
@@ -170,6 +171,11 @@
                                 <span class="office-command-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
                                 <span class="office-command-label">Properties list</span>
                                 <span class="office-command-caption">Overview of each asset</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentController("Units") ? " is-current" : string.Empty)" asp-controller="Units" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-door-open"></i></span>
+                                <span class="office-command-label">Unit directory</span>
+                                <span class="office-command-caption">Types &amp; availability</span>
                             </a>
                             <a class="office-command office-command--large@(IsCurrentAction("Properties", "Create") ? " is-current" : string.Empty)" asp-controller="Properties" asp-action="Create">
                                 <span class="office-command-icon" aria-hidden="true"><i class="bi bi-building-add"></i></span>

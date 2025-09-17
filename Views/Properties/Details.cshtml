@@ -42,7 +42,10 @@
 <section class="card shadow-sm border-0 mb-4">
     <div class="card-header bg-white d-flex justify-content-between align-items-center">
         <span class="fw-semibold">Units (@Model.Units.Count of @Model.TotalUnits)</span>
-        <a class="btn btn-outline-primary btn-sm" asp-controller="Units" asp-action="Create" asp-route-propertyId="@Model.Id">Add Unit</a>
+        <div class="btn-group btn-group-sm">
+            <a class="btn btn-outline-secondary" asp-controller="Units" asp-action="Index" asp-route-propertyId="@Model.Id">Manage Units</a>
+            <a class="btn btn-outline-primary" asp-controller="Units" asp-action="Create" asp-route-propertyId="@Model.Id">Add Unit</a>
+        </div>
     </div>
     <div class="card-body p-0">
         @if (Model.Units.Any())
@@ -75,7 +78,8 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm">
-                                        <a class="btn btn-outline-secondary" asp-controller="Units" asp-action="Edit" asp-route-id="@unit.Id">Edit</a>
+                                        <a class="btn btn-outline-secondary" asp-controller="Units" asp-action="Details" asp-route-id="@unit.Id">View</a>
+                                        <a class="btn btn-outline-primary" asp-controller="Units" asp-action="Edit" asp-route-id="@unit.Id">Edit</a>
                                         <form asp-controller="Units" asp-action="Delete" asp-route-id="@unit.Id" method="post" class="d-inline">
                                             <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Delete this unit?');">Delete</button>
                                         </form>

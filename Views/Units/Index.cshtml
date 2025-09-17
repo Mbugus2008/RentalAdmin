@@ -1,0 +1,99 @@
+@model UnitIndexViewModel
+@{
+    ViewData["Title"] = "Units";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Units</h1>
+    @if (Model.SelectedPropertyId.HasValue)
+    {
+        <a class="btn btn-primary" asp-action="Create" asp-route-propertyId="@Model.SelectedPropertyId.Value">Add Unit</a>
+    }
+}
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-6 col-lg-4">
+                <label class="form-label" for="propertyId">Filter by property</label>
+                <select class="form-select" id="propertyId" name="propertyId">
+                    <option value="">All properties</option>
+                    @foreach (var property in Model.Properties)
+                    {
+                        <option value="@property.Id" @(Model.SelectedPropertyId == property.Id ? "selected" : string.Empty)>@property.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-outline-primary">Apply</button>
+            </div>
+            @if (Model.SelectedPropertyId.HasValue)
+            {
+                <div class="col-md-auto">
+                    <a class="btn btn-outline-secondary" asp-action="Index">Clear</a>
+                </div>
+            }
+            <div class="col-12 col-md text-md-end">
+                @if (!Model.SelectedPropertyId.HasValue)
+                {
+                    <span class="text-muted small">Select a property to add a new unit.</span>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Units.Count == 0)
+{
+    <div class="alert alert-info">No units found for the selected criteria.</div>
+}
+else
+{
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Property</th>
+                        <th>Unit</th>
+                        <th>Type</th>
+                        <th>Notes</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var unit in Model.Units)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">@unit.Property?.Name</div>
+                                <div class="text-muted small">@unit.Property?.Address</div>
+                            </td>
+                            <td>@unit.UnitNumber</td>
+                            <td>@unit.UnitType</td>
+                            <td class="text-muted">
+                                @if (!string.IsNullOrWhiteSpace(unit.Notes))
+                                {
+                                    @unit.Notes
+                                }
+                                else
+                                {
+                                    <span class="fst-italic">No notes</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@unit.Id">View</a>
+                                    <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@unit.Id">Edit</a>
+                                    <form asp-action="Delete" asp-route-id="@unit.Id" asp-route-redirectToUnitsIndex="true" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Delete this unit?');">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
