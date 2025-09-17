@@ -21,7 +21,8 @@
         "tenants" => "people",
         "leases" => "operations",
         "payments" => "operations",
-        _ => "overview"
+        "home" => "home",
+        _ => "home"
     };
 }
 <!DOCTYPE html>
@@ -35,319 +36,297 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header class="app-ribbon shadow-sm">
+    <header class="office-shell shadow-sm">
         <div class="container-fluid px-4">
-            <div class="ribbon-topbar">
-                <div class="ribbon-brand-block">
-                    <div class="ribbon-brand">
-                        <a class="ribbon-brand-title" asp-controller="Home" asp-action="Index">Rental Manager</a>
-                        <span class="ribbon-brand-tagline">Portfolio Console</span>
+            <div class="office-titlebar" role="presentation">
+                <div class="office-titlebar-left">
+                    <div class="office-quick-access" role="toolbar" aria-label="Quick access toolbar">
+                        <a class="office-qa-button@(IsCurrentAction("Properties", "Create") ? " is-active" : string.Empty)" asp-controller="Properties" asp-action="Create" title="New property" aria-label="Create a new property">
+                            <i class="bi bi-building-add" aria-hidden="true"></i>
+                        </a>
+                        <a class="office-qa-button@(IsCurrentAction("Leases", "Create") ? " is-active" : string.Empty)" asp-controller="Leases" asp-action="Create" title="New lease" aria-label="Create a new lease">
+                            <i class="bi bi-journal-plus" aria-hidden="true"></i>
+                        </a>
+                        <a class="office-qa-button@(IsCurrentAction("Payments", "Create") ? " is-active" : string.Empty)" asp-controller="Payments" asp-action="Create" title="Record payment" aria-label="Record a payment">
+                            <i class="bi bi-cash-coin" aria-hidden="true"></i>
+                        </a>
+                        <a class="office-qa-button@(IsCurrentAction("Tenants", "Create") ? " is-active" : string.Empty)" asp-controller="Tenants" asp-action="Create" title="Add tenant" aria-label="Add a tenant">
+                            <i class="bi bi-person-plus" aria-hidden="true"></i>
+                        </a>
                     </div>
-                    <div class="ribbon-context">
-                        <span class="ribbon-context-item">
+                    <div class="office-brand">
+                        <a class="office-brand__name" asp-controller="Home" asp-action="Index">Rental Manager</a>
+                        <span class="office-brand__subtitle">Property console</span>
+                    </div>
+                </div>
+                <div class="office-titlebar-right">
+                    <div class="office-status">
+                        <span class="office-status-chip">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
                             @DateTime.Now.ToString("dddd, MMM d")
                         </span>
-                        <span class="ribbon-context-item">
-                            <i class="bi bi-flag" aria-hidden="true"></i>
+                        <span class="office-status-chip">
+                            <i class="bi bi-flag-fill" aria-hidden="true"></i>
                             Renewals focus
                         </span>
                     </div>
                 </div>
-                <div class="ribbon-quick-actions" role="toolbar" aria-label="Quick actions">
-                    <a class="btn-ribbon btn-ribbon-primary@(IsCurrentAction("Properties", "Create") ? " active" : string.Empty)" asp-controller="Properties" asp-action="Create">
-                        <i class="bi bi-building-add" aria-hidden="true"></i>
-                        <span>New Property</span>
-                    </a>
-                    <a class="btn-ribbon@(IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Create">
-                        <i class="bi bi-journal-plus" aria-hidden="true"></i>
-                        <span>New Lease</span>
-                    </a>
-                    <a class="btn-ribbon@(IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Create">
-                        <i class="bi bi-person-plus" aria-hidden="true"></i>
-                        <span>Add Tenant</span>
-                    </a>
-                </div>
             </div>
-            <div class="ribbon-body">
-                <nav class="ribbon-tablist" role="tablist" aria-label="Ribbon menu">
-                    <button type="button" class="ribbon-tab@(activeTab == "overview" ? " active" : string.Empty)" id="ribbon-tab-overview" data-ribbon-tab="overview" role="tab" aria-controls="ribbon-panel-overview" aria-selected="@(activeTab == "overview" ? "true" : "false")" tabindex="@(activeTab == "overview" ? "0" : "-1")">
-                        Overview
-                    </button>
-                    <button type="button" class="ribbon-tab@(activeTab == "portfolio" ? " active" : string.Empty)" id="ribbon-tab-portfolio" data-ribbon-tab="portfolio" role="tab" aria-controls="ribbon-panel-portfolio" aria-selected="@(activeTab == "portfolio" ? "true" : "false")" tabindex="@(activeTab == "portfolio" ? "0" : "-1")">
-                        Portfolio
-                    </button>
-                    <button type="button" class="ribbon-tab@(activeTab == "people" ? " active" : string.Empty)" id="ribbon-tab-people" data-ribbon-tab="people" role="tab" aria-controls="ribbon-panel-people" aria-selected="@(activeTab == "people" ? "true" : "false")" tabindex="@(activeTab == "people" ? "0" : "-1")">
-                        People
-                    </button>
-                    <button type="button" class="ribbon-tab@(activeTab == "operations" ? " active" : string.Empty)" id="ribbon-tab-operations" data-ribbon-tab="operations" role="tab" aria-controls="ribbon-panel-operations" aria-selected="@(activeTab == "operations" ? "true" : "false")" tabindex="@(activeTab == "operations" ? "0" : "-1")">
-                        Operations
-                    </button>
-                </nav>
-                <div class="ribbon-surface">
-                    <section class="ribbon-panel" id="ribbon-panel-overview" role="tabpanel" aria-labelledby="ribbon-tab-overview" data-ribbon-panel="overview" @(activeTab == "overview" ? string.Empty : "hidden") tabindex="0">
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Portfolio</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Home") ? " active" : string.Empty)" asp-controller="Home" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-speedometer2"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Dashboard</span>
-                                        <span class="ribbon-command-description">Portfolio KPIs &amp; alerts</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentController("Properties") && !IsCurrentAction("Properties", "Create") ? " active" : string.Empty)" asp-controller="Properties" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Manage properties</span>
-                                        <span class="ribbon-command-description">Buildings, units, and owners</span>
-                                    </span>
-                                </a>
-                            </div>
+            <div class="office-tabrow" role="tablist" aria-label="Ribbon tabs">
+                <a class="office-file-button" asp-controller="Home" asp-action="Index">File</a>
+                <button type="button" class="office-tab@(activeTab == "home" ? " is-active" : string.Empty)" id="office-tab-home" data-office-tab="home" role="tab" aria-controls="office-panel-home" aria-selected="@(activeTab == "home" ? "true" : "false")" tabindex="@(activeTab == "home" ? "0" : "-1")">
+                    Home
+                </button>
+                <button type="button" class="office-tab@(activeTab == "portfolio" ? " is-active" : string.Empty)" id="office-tab-portfolio" data-office-tab="portfolio" role="tab" aria-controls="office-panel-portfolio" aria-selected="@(activeTab == "portfolio" ? "true" : "false")" tabindex="@(activeTab == "portfolio" ? "0" : "-1")">
+                    Portfolio
+                </button>
+                <button type="button" class="office-tab@(activeTab == "people" ? " is-active" : string.Empty)" id="office-tab-people" data-office-tab="people" role="tab" aria-controls="office-panel-people" aria-selected="@(activeTab == "people" ? "true" : "false")" tabindex="@(activeTab == "people" ? "0" : "-1")">
+                    People
+                </button>
+                <button type="button" class="office-tab@(activeTab == "operations" ? " is-active" : string.Empty)" id="office-tab-operations" data-office-tab="operations" role="tab" aria-controls="office-panel-operations" aria-selected="@(activeTab == "operations" ? "true" : "false")" tabindex="@(activeTab == "operations" ? "0" : "-1")">
+                    Operations
+                </button>
+            </div>
+            <div class="office-ribbon-body">
+                <section class="office-panel" id="office-panel-home" role="tabpanel" aria-labelledby="office-tab-home" data-office-panel="home" @(activeTab == "home" ? string.Empty : "hidden") tabindex="0">
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Home") ? " is-current" : string.Empty)" asp-controller="Home" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-speedometer2"></i></span>
+                                <span class="office-command-label">Dashboard</span>
+                                <span class="office-command-caption">Portfolio KPIs &amp; alerts</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentController("Properties") && !IsCurrentAction("Properties", "Create") ? " is-current" : string.Empty)" asp-controller="Properties" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
+                                <span class="office-command-label">Manage properties</span>
+                                <span class="office-command-caption">Buildings, units &amp; owners</span>
+                            </a>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Residents &amp; Leases</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Tenants") && !IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-people"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Tenant directory</span>
-                                        <span class="ribbon-command-description">Contacts and history</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Active leases</span>
-                                        <span class="ribbon-command-description">Terms, expirations, and status</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Portfolio</span>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Financials</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " active" : string.Empty)" asp-controller="Payments" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-credit-card-2-front"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Payment ledger</span>
-                                        <span class="ribbon-command-description">Receipts and balances</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Payments", "Create") ? " active" : string.Empty)" asp-controller="Payments" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Record payment</span>
-                                        <span class="ribbon-command-description">Log rent collection</span>
-                                    </span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Tenants") && !IsCurrentAction("Tenants", "Create") ? " is-current" : string.Empty)" asp-controller="Tenants" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-people"></i></span>
+                                <span class="office-command-label">Tenant directory</span>
+                                <span class="office-command-caption">Contacts and profiles</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
+                                <span class="office-command-label">Active leases</span>
+                                <span class="office-command-caption">Terms, expirations &amp; status</span>
+                            </a>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Quick add</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentAction("Properties", "Create") ? " active" : string.Empty)" asp-controller="Properties" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-building-add"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">New property</span>
-                                        <span class="ribbon-command-description">Capture a new asset</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-journal-plus"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">New lease</span>
-                                        <span class="ribbon-command-description">Start a contract</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-person-plus"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Add tenant</span>
-                                        <span class="ribbon-command-description">Onboard a new resident</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Residents</span>
                         </div>
-                    </section>
-                    <section class="ribbon-panel" id="ribbon-panel-portfolio" role="tabpanel" aria-labelledby="ribbon-tab-portfolio" data-ribbon-panel="portfolio" @(activeTab == "portfolio" ? string.Empty : "hidden") tabindex="0">
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Asset management</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Properties") && !IsCurrentAction("Properties", "Create") ? " active" : string.Empty)" asp-controller="Properties" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Properties list</span>
-                                        <span class="ribbon-command-description">Overview of every asset</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Properties", "Create") ? " active" : string.Empty)" asp-controller="Properties" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-building-add"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Add property</span>
-                                        <span class="ribbon-command-description">Track a new community</span>
-                                    </span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-credit-card-2-front"></i></span>
+                                <span class="office-command-label">Payment ledger</span>
+                                <span class="office-command-caption">Receipts and balances</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
+                                <span class="office-command-label">Record payment</span>
+                                <span class="office-command-caption">Log rent collection</span>
+                            </a>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Occupancy</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-clipboard-data"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Lease pipeline</span>
-                                        <span class="ribbon-command-description">Monitor expirations</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-arrow-repeat"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Start renewal</span>
-                                        <span class="ribbon-command-description">Extend resident stays</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Financials</span>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Residents</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Tenants") && !IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-people"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Tenant roster</span>
-                                        <span class="ribbon-command-description">Match residents to units</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-person-plus"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Onboard tenant</span>
-                                        <span class="ribbon-command-description">Capture resident details</span>
-                                    </span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentAction("Properties", "Create") ? " is-current" : string.Empty)" asp-controller="Properties" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-building-add"></i></span>
+                                <span class="office-command-label">New property</span>
+                                <span class="office-command-caption">Capture a new asset</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-journal-plus"></i></span>
+                                <span class="office-command-label">New lease</span>
+                                <span class="office-command-caption">Start a contract</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Tenants", "Create") ? " is-current" : string.Empty)" asp-controller="Tenants" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-person-plus"></i></span>
+                                <span class="office-command-label">Add tenant</span>
+                                <span class="office-command-caption">Onboard a resident</span>
+                            </a>
                         </div>
-                    </section>
-                    <section class="ribbon-panel" id="ribbon-panel-people" role="tabpanel" aria-labelledby="ribbon-tab-people" data-ribbon-panel="people" @(activeTab == "people" ? string.Empty : "hidden") tabindex="0">
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Directory</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Tenants") && !IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-card-list"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Resident directory</span>
-                                        <span class="ribbon-command-description">Profiles, notes, and history</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Tenants", "Create") ? " active" : string.Empty)" asp-controller="Tenants" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-person-plus"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Add resident</span>
-                                        <span class="ribbon-command-description">Invite a new tenant</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Quick capture</span>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Lease contacts</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Active agreements</span>
-                                        <span class="ribbon-command-description">Key contacts &amp; dates</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-pencil-square"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Draft lease</span>
-                                        <span class="ribbon-command-description">Capture terms &amp; rent</span>
-                                    </span>
-                                </a>
-                            </div>
+                    </div>
+                </section>
+                <section class="office-panel" id="office-panel-portfolio" role="tabpanel" aria-labelledby="office-tab-portfolio" data-office-panel="portfolio" @(activeTab == "portfolio" ? string.Empty : "hidden") tabindex="0">
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Properties") && !IsCurrentAction("Properties", "Create") ? " is-current" : string.Empty)" asp-controller="Properties" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
+                                <span class="office-command-label">Properties list</span>
+                                <span class="office-command-caption">Overview of each asset</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Properties", "Create") ? " is-current" : string.Empty)" asp-controller="Properties" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-building-add"></i></span>
+                                <span class="office-command-label">Add property</span>
+                                <span class="office-command-caption">Track a new community</span>
+                            </a>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Account health</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " active" : string.Empty)" asp-controller="Payments" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-clipboard-check"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Billing status</span>
-                                        <span class="ribbon-command-description">Open balances by resident</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Payments", "Create") ? " active" : string.Empty)" asp-controller="Payments" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Log payment</span>
-                                        <span class="ribbon-command-description">Apply rent or deposits</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Asset management</span>
                         </div>
-                    </section>
-                    <section class="ribbon-panel" id="ribbon-panel-operations" role="tabpanel" aria-labelledby="ribbon-tab-operations" data-ribbon-panel="operations" @(activeTab == "operations" ? string.Empty : "hidden") tabindex="0">
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Lease workflow</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Manage leases</span>
-                                        <span class="ribbon-command-description">Review terms and renewals</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Leases", "Create") ? " active" : string.Empty)" asp-controller="Leases" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-journal-plus"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Create lease</span>
-                                        <span class="ribbon-command-description">Launch a new agreement</span>
-                                    </span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-clipboard-data"></i></span>
+                                <span class="office-command-label">Lease pipeline</span>
+                                <span class="office-command-caption">Monitor expirations</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-arrow-repeat"></i></span>
+                                <span class="office-command-label">Start renewal</span>
+                                <span class="office-command-caption">Extend resident stays</span>
+                            </a>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Receivables</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " active" : string.Empty)" asp-controller="Payments" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-credit-card-2-front"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Payment log</span>
-                                        <span class="ribbon-command-description">Track rent collection</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentAction("Payments", "Create") ? " active" : string.Empty)" asp-controller="Payments" asp-action="Create">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Record receipt</span>
-                                        <span class="ribbon-command-description">Apply a new payment</span>
-                                    </span>
-                                </a>
-                            </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Occupancy</span>
                         </div>
-                        <div class="ribbon-group">
-                            <h3 class="ribbon-group-title">Portfolio tools</h3>
-                            <div class="ribbon-commands">
-                                <a class="ribbon-command@(IsCurrentController("Home") ? " active" : string.Empty)" asp-controller="Home" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-speedometer2"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Operations dashboard</span>
-                                        <span class="ribbon-command-description">Live performance metrics</span>
-                                    </span>
-                                </a>
-                                <a class="ribbon-command@(IsCurrentController("Properties") && !IsCurrentAction("Properties", "Create") ? " active" : string.Empty)" asp-controller="Properties" asp-action="Index">
-                                    <span class="ribbon-command-icon" aria-hidden="true"><i class="bi bi-buildings"></i></span>
-                                    <span class="ribbon-command-text">
-                                        <span class="ribbon-command-label">Asset registry</span>
-                                        <span class="ribbon-command-description">Ensure data accuracy</span>
-                                    </span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Home") ? " is-current" : string.Empty)" asp-controller="Home" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-graph-up"></i></span>
+                                <span class="office-command-label">Performance view</span>
+                                <span class="office-command-caption">Portfolio KPIs dashboard</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-credit-card-2-front"></i></span>
+                                <span class="office-command-label">Receivables</span>
+                                <span class="office-command-caption">Rent collected &amp; due</span>
+                            </a>
                         </div>
-                    </section>
-                </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Insights</span>
+                        </div>
+                    </div>
+                </section>
+                <section class="office-panel" id="office-panel-people" role="tabpanel" aria-labelledby="office-tab-people" data-office-panel="people" @(activeTab == "people" ? string.Empty : "hidden") tabindex="0">
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Tenants") && !IsCurrentAction("Tenants", "Create") ? " is-current" : string.Empty)" asp-controller="Tenants" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-card-list"></i></span>
+                                <span class="office-command-label">Resident directory</span>
+                                <span class="office-command-caption">Profiles, notes &amp; history</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Tenants", "Create") ? " is-current" : string.Empty)" asp-controller="Tenants" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-person-plus"></i></span>
+                                <span class="office-command-label">Add resident</span>
+                                <span class="office-command-caption">Invite a new tenant</span>
+                            </a>
+                        </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Directory</span>
+                        </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
+                                <span class="office-command-label">Active agreements</span>
+                                <span class="office-command-caption">Key contacts &amp; dates</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-pencil-square"></i></span>
+                                <span class="office-command-label">Draft lease</span>
+                                <span class="office-command-caption">Capture terms &amp; rent</span>
+                            </a>
+                        </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Lease contacts</span>
+                        </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-clipboard-check"></i></span>
+                                <span class="office-command-label">Billing status</span>
+                                <span class="office-command-caption">Open balances by resident</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
+                                <span class="office-command-label">Log payment</span>
+                                <span class="office-command-caption">Apply rent or deposits</span>
+                            </a>
+                        </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Account health</span>
+                        </div>
+                    </div>
+                </section>
+                <section class="office-panel" id="office-panel-operations" role="tabpanel" aria-labelledby="office-tab-operations" data-office-panel="operations" @(activeTab == "operations" ? string.Empty : "hidden") tabindex="0">
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Payments") && !IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-credit-card-2-front"></i></span>
+                                <span class="office-command-label">Payment log</span>
+                                <span class="office-command-caption">Track rent collection</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Payments", "Create") ? " is-current" : string.Empty)" asp-controller="Payments" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-cash-coin"></i></span>
+                                <span class="office-command-label">Record receipt</span>
+                                <span class="office-command-caption">Apply new payments</span>
+                            </a>
+                        </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Receivables</span>
+                        </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Leases") && !IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-journal-check"></i></span>
+                                <span class="office-command-label">Manage leases</span>
+                                <span class="office-command-caption">Review terms &amp; renewals</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Leases", "Create") ? " is-current" : string.Empty)" asp-controller="Leases" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-journal-plus"></i></span>
+                                <span class="office-command-label">Create lease</span>
+                                <span class="office-command-caption">Launch new agreements</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentAction("Tenants", "Create") ? " is-current" : string.Empty)" asp-controller="Tenants" asp-action="Create">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-person-lines-fill"></i></span>
+                                <span class="office-command-label">Onboard tenant</span>
+                                <span class="office-command-caption">Assign residents to units</span>
+                            </a>
+                        </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Lease workflow</span>
+                        </div>
+                    </div>
+                    <div class="office-group">
+                        <div class="office-group-body">
+                            <a class="office-command office-command--large@(IsCurrentController("Home") ? " is-current" : string.Empty)" asp-controller="Home" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-speedometer2"></i></span>
+                                <span class="office-command-label">Operations dashboard</span>
+                                <span class="office-command-caption">Live performance metrics</span>
+                            </a>
+                            <a class="office-command office-command--large@(IsCurrentController("Properties") && !IsCurrentAction("Properties", "Create") ? " is-current" : string.Empty)" asp-controller="Properties" asp-action="Index">
+                                <span class="office-command-icon" aria-hidden="true"><i class="bi bi-building"></i></span>
+                                <span class="office-command-label">Asset registry</span>
+                                <span class="office-command-caption">Ensure data accuracy</span>
+                            </a>
+                        </div>
+                        <div class="office-group-footer">
+                            <span class="office-group-title">Portfolio tools</span>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
     </header>

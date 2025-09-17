@@ -8,8 +8,8 @@
     };
 
     onReady(() => {
-        const tabButtons = Array.from(document.querySelectorAll('[data-ribbon-tab]'));
-        const panels = Array.from(document.querySelectorAll('[data-ribbon-panel]'));
+        const tabButtons = Array.from(document.querySelectorAll('[data-office-tab]'));
+        const panels = Array.from(document.querySelectorAll('[data-office-panel]'));
 
         if (tabButtons.length === 0 || panels.length === 0) {
             return;
@@ -21,15 +21,16 @@
             }
 
             tabButtons.forEach((button) => {
-                const isActive = button.dataset.ribbonTab === targetId;
-                button.classList.toggle('active', isActive);
+                const isActive = button.dataset.officeTab === targetId;
+                button.classList.toggle('is-active', isActive);
                 button.setAttribute('aria-selected', isActive ? 'true' : 'false');
                 button.tabIndex = isActive ? 0 : -1;
             });
 
             panels.forEach((panel) => {
-                const isActive = panel.dataset.ribbonPanel === targetId;
-                panel.classList.toggle('active', isActive);
+                const isActive = panel.dataset.officePanel === targetId;
+                panel.classList.toggle('is-active', isActive);
+                panel.tabIndex = isActive ? 0 : -1;
                 if (isActive) {
                     panel.removeAttribute('hidden');
                 } else {
@@ -46,7 +47,7 @@
             const normalizedIndex = (index + tabButtons.length) % tabButtons.length;
             const button = tabButtons[normalizedIndex];
             button.focus();
-            const target = button.dataset.ribbonTab;
+            const target = button.dataset.officeTab;
             if (target) {
                 activate(target);
             }
@@ -54,7 +55,7 @@
 
         tabButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
-                const target = button.dataset.ribbonTab;
+                const target = button.dataset.officeTab;
                 if (target) {
                     activate(target);
                 }
@@ -71,9 +72,9 @@
             });
         });
 
-        const defaultButton = tabButtons.find((button) => button.classList.contains('active')) || tabButtons[0];
-        if (defaultButton && defaultButton.dataset.ribbonTab) {
-            activate(defaultButton.dataset.ribbonTab);
+        const defaultButton = tabButtons.find((button) => button.classList.contains('is-active')) || tabButtons[0];
+        if (defaultButton && defaultButton.dataset.officeTab) {
+            activate(defaultButton.dataset.officeTab);
         }
     });
 })();

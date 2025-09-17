@@ -1,17 +1,19 @@
 :root {
-    --ribbon-bg-start: #4356d3;
-    --ribbon-bg-end: #1a2a73;
-    --ribbon-surface: rgba(255, 255, 255, 0.18);
-    --ribbon-border: rgba(255, 255, 255, 0.32);
-    --ribbon-panel-border: rgba(16, 40, 110, 0.12);
-    --ribbon-panel-shadow: rgba(16, 38, 110, 0.16);
-    --ribbon-text-strong: #102048;
-    --ribbon-text-soft: rgba(16, 32, 72, 0.65);
+    --office-accent: #2b579a;
+    --office-accent-dark: #1f3f7d;
+    --office-accent-light: #e8f0ff;
+    --office-accent-lighter: #f5f7ff;
+    --office-border: #d2dcf2;
+    --office-border-strong: #b7c6e7;
+    --office-text: #1b2559;
+    --office-muted: #66739b;
+    --office-panel-shadow: rgba(23, 54, 129, 0.18);
+    --office-quick-bg: rgba(255, 255, 255, 0.14);
 }
 
 body {
-    background: linear-gradient(180deg, #f4f6ff 0%, #eef1fb 40%, #f8f9fd 100%);
-    color: #1c2440;
+    background: linear-gradient(180deg, #f4f6fc 0%, #eef1fb 45%, #f7f9ff 100%);
+    color: var(--office-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
     display: flex;
@@ -22,356 +24,330 @@ main {
     flex: 1 0 auto;
 }
 
-.app-ribbon {
-    background: linear-gradient(135deg, var(--ribbon-bg-start) 0%, var(--ribbon-bg-end) 100%);
+.office-shell {
+    background: linear-gradient(135deg, #284fa9 0%, #1b367c 100%);
     color: #fff;
-    padding: 2.75rem 0 1.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 24px 60px rgba(21, 38, 105, 0.35);
+    border-bottom: 1px solid rgba(14, 38, 110, 0.35);
+    box-shadow: 0 24px 48px rgba(17, 42, 110, 0.35);
 }
 
-.app-ribbon::before {
+.office-shell::before {
     content: "";
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.32) 0%, transparent 55%),
-        radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.22) 0%, transparent 60%),
-        radial-gradient(circle at 50% 110%, rgba(255, 255, 255, 0.18) 0%, transparent 65%);
+        radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.28) 0%, transparent 60%),
+        radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.18) 0%, transparent 58%),
+        radial-gradient(circle at 40% 120%, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
     pointer-events: none;
 }
 
-.ribbon-topbar {
+.office-shell .container-fluid {
     position: relative;
     z-index: 1;
+    padding-top: 1.35rem;
+    padding-bottom: 0.9rem;
+}
+
+.office-titlebar {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    justify-content: space-between;
     gap: 1.5rem;
-}
-
-.ribbon-brand-block {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-}
-
-.ribbon-brand {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.ribbon-brand-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    color: #fff;
-    text-decoration: none;
-}
-
-.ribbon-brand-title:hover,
-.ribbon-brand-title:focus {
-    color: #f6f8ff;
-    text-decoration: none;
-}
-
-.ribbon-brand-tagline {
-    font-size: 0.8rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.ribbon-context {
-    display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 0.6rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.85rem;
 }
 
-.ribbon-context-item {
+.office-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    flex-wrap: wrap;
+}
+
+.office-quick-access {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
+    gap: 0.35rem;
+    background: var(--office-quick-bg);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(6px);
+    padding: 0.3rem 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.ribbon-context-item i {
-    font-size: 1rem;
-}
-
-.ribbon-quick-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-left: auto;
+.office-qa-button {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 0.5rem;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-ribbon {
+.office-qa-button i {
+    font-size: 1.1rem;
+}
+
+.office-qa-button:hover,
+.office-qa-button:focus {
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.office-qa-button:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.office-qa-button.is-active {
+    background: rgba(255, 255, 255, 0.32);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), 0 8px 18px rgba(15, 36, 98, 0.35);
+}
+
+.office-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.office-brand__name {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+}
+
+.office-brand__name:hover,
+.office-brand__name:focus {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.office-brand__subtitle {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.office-titlebar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.office-status {
+    display: flex;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.office-status-chip {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.55rem 1.05rem;
+    padding: 0.4rem 0.85rem;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    background: rgba(255, 255, 255, 0.16);
-    color: #fff;
-    font-weight: 600;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    box-shadow: 0 15px 30px rgba(15, 32, 88, 0.35);
+    background: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.85rem;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-.btn-ribbon i {
+.office-status-chip i {
     font-size: 1rem;
 }
 
-.btn-ribbon:hover,
-.btn-ribbon:focus {
-    color: #0c2050;
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-2px);
-    text-decoration: none;
-}
-
-.btn-ribbon:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 4px;
-}
-
-.btn-ribbon-primary {
-    background: linear-gradient(135deg, #ffd76d 0%, #ff9a56 100%);
-    color: #1f2757;
-    border-color: transparent;
-}
-
-.btn-ribbon-primary:hover,
-.btn-ribbon-primary:focus {
-    background: linear-gradient(135deg, #ffe08c 0%, #ffaa6a 100%);
-    color: #1f2757;
-}
-
-.btn-ribbon.active {
-    background: rgba(255, 255, 255, 0.28);
-    color: #0d2258;
-}
-
-.ribbon-body {
-    margin-top: 1.85rem;
-    position: relative;
-    z-index: 1;
-}
-
-.ribbon-tablist {
+.office-tabrow {
     display: flex;
-    flex-wrap: wrap;
     align-items: flex-end;
-    gap: 0.65rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.75rem;
+    padding: 0.35rem 0.5rem 0;
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 0.75rem 0.75rem 0 0;
+    backdrop-filter: blur(8px);
 }
 
-.ribbon-tab {
+.office-file-button {
+    background: #1f4fa3;
+    color: #fff;
+    font-weight: 600;
+    padding: 0.55rem 1.1rem;
+    border-radius: 0.55rem 0.55rem 0 0;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(26, 63, 150, 0.35);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.office-file-button:hover,
+.office-file-button:focus {
+    text-decoration: none;
+    background: #1a448f;
+    transform: translateY(-1px);
+}
+
+.office-tab {
     border: 0;
     background: transparent;
     color: rgba(255, 255, 255, 0.78);
     font-weight: 600;
-    padding: 0.45rem 1.05rem;
-    border-radius: 0.85rem 0.85rem 0 0;
+    padding: 0.55rem 1.05rem;
+    border-radius: 0.55rem 0.55rem 0 0;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ribbon-tab:hover,
-.ribbon-tab:focus {
+.office-tab:hover,
+.office-tab:focus {
     color: #fff;
 }
 
-.ribbon-tab:focus-visible {
+.office-tab:focus-visible {
     outline: 2px solid #fff;
-    outline-offset: 4px;
+    outline-offset: 3px;
 }
 
-.ribbon-tab.active {
-    background: rgba(255, 255, 255, 0.28);
-    color: #fff;
-    box-shadow: 0 12px 24px rgba(10, 26, 72, 0.35);
+.office-tab.is-active {
+    background: #ffffff;
+    color: var(--office-accent);
+    box-shadow: 0 -1px 0 0 #ffffff, 0 -8px 18px rgba(24, 52, 120, 0.25);
 }
 
-.ribbon-surface {
-    margin-top: 0.85rem;
-    background: var(--ribbon-surface);
-    border-radius: 1.4rem;
-    padding: 1.9rem;
-    border: 1px solid var(--ribbon-border);
-    backdrop-filter: blur(18px);
-    box-shadow: 0 30px 60px rgba(8, 20, 70, 0.4);
+.office-ribbon-body {
+    background: #ffffff;
+    border-radius: 0 0 1rem 1rem;
+    border: 1px solid rgba(23, 46, 110, 0.15);
+    border-top: none;
+    padding: 1.6rem 1.25rem 1.3rem;
+    box-shadow: 0 24px 44px var(--office-panel-shadow);
 }
 
-.ribbon-panel {
-    display: grid;
-    gap: 1.35rem;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+.office-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    align-items: stretch;
 }
 
-.ribbon-panel[hidden] {
+.office-panel[hidden] {
     display: none;
 }
 
-.ribbon-group {
-    background: rgba(255, 255, 255, 0.96);
-    border-radius: 1.05rem;
-    padding: 1.05rem 1.1rem 1.15rem;
-    border: 1px solid var(--ribbon-panel-border);
-    box-shadow: 0 24px 45px var(--ribbon-panel-shadow);
+.office-group {
+    flex: 1 1 220px;
+    min-width: 220px;
+    background: linear-gradient(180deg, var(--office-accent-lighter) 0%, #ffffff 65%);
+    border-radius: 1rem;
+    border: 1px solid var(--office-border);
+    box-shadow: 0 16px 32px rgba(22, 52, 125, 0.15);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    color: var(--ribbon-text-strong);
+    padding: 1rem;
+    gap: 0.9rem;
 }
 
-.ribbon-group-title {
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--ribbon-text-soft);
-    margin-bottom: 0.15rem;
-}
-
-.ribbon-commands {
+.office-group-body {
     display: grid;
-    gap: 0.7rem;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 1rem;
+    justify-items: center;
 }
 
-.ribbon-command {
+.office-group-footer {
+    border-top: 1px solid var(--office-border);
+    padding-top: 0.5rem;
+    text-align: center;
+}
+
+.office-group-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--office-muted);
+}
+
+.office-command {
     display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 0.8rem;
-    border-radius: 0.95rem;
-    background: rgba(246, 248, 255, 0.92);
-    border: 1px solid rgba(30, 62, 150, 0.12);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.45rem;
+    color: var(--office-text);
     text-decoration: none;
-    color: var(--ribbon-text-strong);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
-}
-
-.ribbon-command:hover,
-.ribbon-command:focus {
-    background: #fff;
-    transform: translateY(-3px);
-    box-shadow: 0 20px 36px rgba(16, 45, 120, 0.24);
-    color: var(--ribbon-text-strong);
-    text-decoration: none;
-}
-
-.ribbon-command:focus-visible {
-    outline: 2px solid #3c57ce;
-    outline-offset: 4px;
-}
-
-.ribbon-command-icon {
-    width: 2.55rem;
-    height: 2.55rem;
+    padding: 0.55rem 0.65rem 0.7rem;
     border-radius: 0.85rem;
-    background: linear-gradient(135deg, rgba(120, 173, 255, 0.88) 0%, rgba(255, 255, 255, 0.75) 100%);
-    color: #122a6c;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    min-width: 110px;
+}
+
+.office-command--large .office-command-label {
+    font-size: 0.92rem;
+}
+
+.office-command:hover,
+.office-command:focus {
+    text-decoration: none;
+    background: var(--office-accent-light);
+    border-color: var(--office-border-strong);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 36px rgba(23, 54, 129, 0.2);
+}
+
+.office-command:focus-visible {
+    outline: 2px solid var(--office-accent);
+    outline-offset: 3px;
+}
+
+.office-command.is-current {
+    background: rgba(43, 87, 154, 0.18);
+    border-color: rgba(43, 87, 154, 0.45);
+    box-shadow: 0 0 0 1px rgba(43, 87, 154, 0.45), 0 16px 28px rgba(26, 60, 130, 0.2);
+}
+
+.office-command-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.8rem;
+    background: linear-gradient(180deg, rgba(43, 87, 154, 0.12) 0%, rgba(43, 87, 154, 0.3) 100%);
+    color: var(--office-accent);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
-    box-shadow: 0 14px 30px rgba(18, 42, 120, 0.25);
-    flex-shrink: 0;
+    font-size: 1.5rem;
+    box-shadow: inset 0 0 0 1px rgba(43, 87, 154, 0.12);
 }
 
-.ribbon-command-label {
-    font-weight: 700;
-    font-size: 0.96rem;
+.office-command-label {
+    font-weight: 600;
 }
 
-.ribbon-command-description {
-    display: block;
+.office-command-caption {
     font-size: 0.78rem;
-    color: var(--ribbon-text-soft);
-    line-height: 1.35;
-}
-
-.ribbon-command.active {
-    background: linear-gradient(135deg, #ffffff 0%, #e0e8ff 100%);
-    border-color: rgba(66, 108, 232, 0.45);
-    box-shadow: 0 24px 44px rgba(28, 64, 160, 0.28);
-}
-
-.ribbon-command.active .ribbon-command-icon {
-    background: linear-gradient(135deg, #ffdfa3 0%, #ffb668 100%);
-    color: #3f2a05;
-    box-shadow: 0 18px 38px rgba(255, 170, 96, 0.38);
+    line-height: 1.3;
+    color: var(--office-muted);
 }
 
 footer {
-    background: rgba(255, 255, 255, 0.85);
-}
-
-@media (max-width: 992px) {
-    .app-ribbon {
-        padding: 2.3rem 0 1.2rem;
-    }
-
-    .ribbon-surface {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .ribbon-topbar {
-        gap: 1.1rem;
-    }
-
-    .ribbon-quick-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .ribbon-tablist {
-        overflow-x: auto;
-        padding-bottom: 0.25rem;
-    }
-
-    .ribbon-tab {
-        flex: 0 0 auto;
-    }
-
-    .ribbon-panel {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 576px) {
-    .app-ribbon {
-        padding: 2rem 0 0.95rem;
-    }
-
-    .ribbon-surface {
-        padding: 1.25rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .btn-ribbon,
-    .ribbon-tab,
-    .ribbon-command {
-        transition: none;
-    }
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .card {
-    border-radius: 0.85rem;
-    border: none;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(17, 38, 90, 0.1);
 }
 
 .table > :not(caption) > * > * {
@@ -380,16 +356,78 @@ footer {
 }
 
 .btn-primary {
-    background-color: #2f64c4;
-    border-color: #2f64c4;
+    background-color: #2b579a;
+    border-color: #2b579a;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-    background-color: #244d96;
-    border-color: #244d96;
+    background-color: #1f4176;
+    border-color: #1f4176;
 }
 
 .badge.bg-secondary {
     background-color: #4c6ef5 !important;
+}
+
+@media (max-width: 992px) {
+    .office-shell .container-fluid {
+        padding-top: 1rem;
+    }
+
+    .office-tabrow {
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+    }
+
+    .office-tab {
+        flex: 0 0 auto;
+    }
+
+    .office-group {
+        flex: 1 1 260px;
+    }
+}
+
+@media (max-width: 768px) {
+    .office-titlebar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .office-titlebar-left,
+    .office-titlebar-right {
+        width: 100%;
+    }
+
+    .office-group-body {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .office-shell .container-fluid {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    .office-ribbon-body {
+        padding: 1.2rem 0.85rem 1rem;
+    }
+
+    .office-group {
+        min-width: 100%;
+    }
+
+    .office-group-body {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .office-qa-button,
+    .office-tab,
+    .office-command {
+        transition: none;
+    }
 }
