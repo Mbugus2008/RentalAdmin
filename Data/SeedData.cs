@@ -26,7 +26,7 @@ public static class SeedData
                 City = "Springfield",
                 State = "IL",
                 ZipCode = "62704",
-                Units = 12,
+                TotalUnits = 12,
                 Notes = "Downtown mid-rise with renovated kitchens."
             },
             new()
@@ -36,7 +36,7 @@ public static class SeedData
                 City = "Madison",
                 State = "WI",
                 ZipCode = "53703",
-                Units = 8,
+                TotalUnits = 8,
                 Notes = "Townhome community near the lake trail."
             }
         };
