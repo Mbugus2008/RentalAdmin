@@ -61,3 +61,56 @@ Rental Manager is a full-featured ASP.NET Core MVC application designed to help 
 - Entity Framework Core uses `EnsureCreated` on startup; drop the `RentalDb` database (or clear your target SQL Server database) to reset the sample data.
 - Validation attributes on the models drive both client-side and server-side validation for forms.
 - The solution targets .NET 8 and uses SQL Server by default. Swap the connection string in `appsettings.json` and install another EF Core provider if you prefer SQLite, PostgreSQL, or a different database engine.
+
+## REST API (used by the Flutter rental app)
+
+The server exposes a JSON REST API under `/api/*` alongside the MVC admin UI. All data endpoints require a JWT bearer token obtained from `/api/auth/login`.
+
+### Running
+
+```bash
+dotnet run --launch-profile https
+```
+
+The `https` profile binds **`https://0.0.0.0:7170`** (all interfaces, so a phone or emulator on your LAN can reach it) and `http://0.0.0.0:7171`.
+
+### Demo credentials (seeded on first run)
+
+| Email | Password |
+|-------|----------|
+| `admin@rental.local` | `Admin123!` |
+
+### Endpoints
+
+| Method | Route | Auth | Notes |
+|--------|-------|------|-------|
+| POST | `/api/auth/login` | anonymous | body `{email, password}` → `{token}` |
+| POST | `/api/auth/register` | anonymous | body `{firstName, lastName, email, password, phoneNumber}` → 200 |
+| POST | `/api/auth/oauth/{provider}` | anonymous | 501 (not configured) |
+| GET | `/api/auth/validate` | bearer | 200 if token valid |
+| POST | `/api/auth/refresh` | bearer | → `{token}` |
+| GET | `/api/users/profile` | bearer | current user JSON |
+| GET/POST | `/api/properties` | bearer | list / create (201) |
+| GET/PUT/DELETE | `/api/properties/{id}` | bearer | 200 / 200 / 200 |
+| GET/POST | `/api/tenants` | bearer | same pattern |
+| GET/POST | `/api/leases` | bearer | same pattern |
+| GET/POST | `/api/transactions` | bearer | same pattern |
+| GET/POST | `/api/maintenance` | bearer | same pattern |
+| GET/POST | `/api/documents` | bearer | same pattern |
+| GET | `/api/reports/summary` | bearer | `{totalRevenue, totalExpenses, netIncome, occupancyRate}` |
+| GET | `/api/reports/income` `/expenses` `/occupancy` | bearer | report data |
+| GET | `/api/reports/lease-expirations?days=90` | bearer | expiring leases |
+| GET | `/api/reports/maintenance` | bearer | maintenance counts |
+| POST | `/api/reports/export` | bearer | body `{reportType}` |
+
+### Connecting from the Flutter app
+
+Update `lib/app/core/config/app_config.dart` `baseUrl` to point at this server:
+
+- **Android emulator:** `https://10.0.2.2:7170/api` (host loopback)
+- **Physical device (same Wi-Fi):** `https://<this-pc-lan-ip>:7170/api`
+- The API uses the ASP.NET Core HTTPS dev certificate. Android/iOS will reject it unless the certificate is trusted on the device, or you use the HTTP endpoint (`http://<host>:7171/api`) for development.
+
+### JWT configuration
+
+JWT settings live in `appsettings.json` under `Jwt` (issuer, audience, signing key, expiry). Change the `Key` before deploying anywhere beyond local development.

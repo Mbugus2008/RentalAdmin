@@ -28,6 +28,23 @@ public class Tenant
     [Display(Name = "Move-in Date")]
     public DateTime? MoveInDate { get; set; }
 
+    [StringLength(100)]
+    [Display(Name = "Emergency Contact")]
+    public string? EmergencyContactName { get; set; }
+
+    [Phone]
+    [StringLength(50)]
+    [Display(Name = "Emergency Phone")]
+    public string? EmergencyContactPhone { get; set; }
+
+    [DataType(DataType.MultilineText)]
+    [StringLength(1000)]
+    public string? Notes { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime? UpdatedAt { get; set; }
+
     public string FullName => $"{FirstName} {LastName}".Trim();
 
     public ICollection<Lease> Leases { get; set; } = new List<Lease>();

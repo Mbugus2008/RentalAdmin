@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,12 +26,31 @@ public class Property
     [StringLength(20)]
     public string? ZipCode { get; set; }
 
-    [Range(1, 500)]
+    [StringLength(100)]
+    public string? Country { get; set; }
+
+    [Display(Name = "Property Type")]
+    [StringLength(50)]
+    public string? PropertyType { get; set; }
+
+    [Range(0, 500)]
     public int Units { get; set; }
+
+    [DataType(DataType.Currency)]
+    [Display(Name = "Purchase Price")]
+    public decimal? PurchasePrice { get; set; }
+
+    [DataType(DataType.Currency)]
+    [Display(Name = "Market Value")]
+    public decimal? MarketValue { get; set; }
 
     [Display(Name = "Notes")]
     [DataType(DataType.MultilineText)]
     public string? Notes { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public DateTime? UpdatedAt { get; set; }
 
     public ICollection<Lease> Leases { get; set; } = new List<Lease>();
 }
