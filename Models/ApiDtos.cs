@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Rental.Models;
 
 namespace Rental.Api;
@@ -73,6 +75,31 @@ public class TransactionRequest
     public int? UnitId { get; set; }
     public int? TenantId { get; set; }
     public string? Description { get; set; }
+}
+
+public class InvoiceLineRequest
+{
+    public string? Description { get; set; }
+    public decimal? Amount { get; set; }
+}
+
+public class InvoiceRequest
+{
+    public int? TenantId { get; set; }
+    public int? PropertyId { get; set; }
+    public int? UnitId { get; set; }
+    public DateTime? InvoiceDate { get; set; }
+    public DateTime? DueDate { get; set; }
+    public string? Status { get; set; }
+    public decimal? AmountPaid { get; set; }
+    public string? Notes { get; set; }
+    public List<InvoiceLineRequest>? Lines { get; set; }
+}
+
+public class SettingsRequest
+{
+    public decimal? WaterRatePerUnit { get; set; }
+    public decimal? GarbageFee { get; set; }
 }
 
 public class MaintenanceRequestDto
@@ -212,6 +239,37 @@ public static class ApiMap
         filePath = d.FilePath,
         createdAt = d.CreatedAt,
         updatedAt = d.UpdatedAt
+    };
+
+    public static object Invoice(Models.Invoice i) => new
+    {
+        id = i.Id,
+        invoiceNumber = i.InvoiceNumber,
+        tenantId = i.TenantId,
+        propertyId = i.PropertyId,
+        unitId = i.UnitId,
+        invoiceDate = i.InvoiceDate,
+        dueDate = i.DueDate,
+        status = i.Status,
+        totalAmount = i.TotalAmount,
+        amountPaid = i.AmountPaid,
+        notes = i.Notes,
+        lines = i.Lines.Select(l => new
+        {
+            id = l.Id,
+            description = l.Description,
+            amount = l.Amount
+        }),
+        createdAt = i.CreatedAt,
+        updatedAt = i.UpdatedAt
+    };
+
+    public static object Settings(Models.AppSettings s) => new
+    {
+        id = s.Id,
+        waterRatePerUnit = s.WaterRatePerUnit,
+        garbageFee = s.GarbageFee,
+        updatedAt = s.UpdatedAt
     };
 
     public static object User(Models.User u) => new

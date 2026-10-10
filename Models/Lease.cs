@@ -31,12 +31,12 @@ public class Lease
     public DateTime? EndDate { get; set; }
 
     [DataType(DataType.Currency)]
-    [Range(0, 100000)]
+    [Range(0, 10000000)]
     [Display(Name = "Monthly Rent")]
     public decimal MonthlyRent { get; set; }
 
     [DataType(DataType.Currency)]
-    [Range(0, 100000)]
+    [Range(0, 10000000)]
     [Display(Name = "Security Deposit")]
     public decimal SecurityDeposit { get; set; }
 

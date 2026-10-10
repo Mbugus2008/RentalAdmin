@@ -17,6 +17,9 @@ public class RentalContext : DbContext
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<MaintenanceRequest> MaintenanceRequests => Set<MaintenanceRequest>();
     public DbSet<RentalDocument> Documents => Set<RentalDocument>();
+    public DbSet<Invoice> Invoices => Set<Invoice>();
+    public DbSet<InvoiceLine> InvoiceLines => Set<InvoiceLine>();
+    public DbSet<AppSettings> AppSettings => Set<AppSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -72,6 +75,24 @@ public class RentalContext : DbContext
             .HasOne(d => d.Tenant)
             .WithMany()
             .HasForeignKey(d => d.TenantId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Invoice>()
+            .HasMany(i => i.Lines)
+            .WithOne(l => l.Invoice!)
+            .HasForeignKey(l => l.InvoiceId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Invoice>()
+            .HasOne(i => i.Tenant)
+            .WithMany()
+            .HasForeignKey(i => i.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Invoice>()
+            .HasOne(i => i.Property)
+            .WithMany()
+            .HasForeignKey(i => i.PropertyId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 }

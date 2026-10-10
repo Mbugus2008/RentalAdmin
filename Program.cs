@@ -80,7 +80,13 @@ else
     app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
+// HTTPS redirection is skipped in Development so the Flutter app can reach
+// the plain HTTP endpoint (e.g. from an Android emulator via 10.0.2.2).
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseStaticFiles();
 
 app.UseRouting();

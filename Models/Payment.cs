@@ -18,7 +18,7 @@ public class Payment
     public DateTime PaymentDate { get; set; }
 
     [DataType(DataType.Currency)]
-    [Range(0, 100000)]
+    [Range(0, 10000000)]
     public decimal Amount { get; set; }
 
     [StringLength(100)]

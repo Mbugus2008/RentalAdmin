@@ -26,7 +26,7 @@ public static class SeedData
                 FirstName = "Demo",
                 LastName = "Landlord",
                 Email = "admin@rental.local",
-                PhoneNumber = "555-0100",
+                PhoneNumber = "+254 700 000 100",
                 Role = "Landlord",
                 PasswordHash = PasswordHasher.Hash("Admin123!"),
                 CreatedAt = DateTime.UtcNow
@@ -48,6 +48,17 @@ public static class SeedData
         {
             await SeedDocumentsAsync(context, today);
         }
+
+        if (!await context.Invoices.AnyAsync())
+        {
+            await SeedInvoicesAsync(context, today);
+        }
+
+        if (!await context.AppSettings.AnyAsync())
+        {
+            context.AppSettings.Add(new AppSettings());
+            await context.SaveChangesAsync();
+        }
     }
 
     private static async Task SeedCorePortfolioAsync(RentalContext context, DateTime today)
@@ -56,23 +67,23 @@ public static class SeedData
         {
             new()
             {
-                Name = "Maple Apartments",
-                Address = "742 Evergreen Terrace",
-                City = "Springfield",
-                State = "IL",
-                ZipCode = "62704",
+                Name = "Kilimani Heights",
+                Address = "Wood Avenue, Kilimani",
+                City = "Nairobi",
+                State = "Nairobi County",
+                ZipCode = "00100",
                 Units = 12,
-                Notes = "Downtown mid-rise with renovated kitchens."
+                Notes = "Modern mid-rise apartments with renovated kitchens."
             },
             new()
             {
-                Name = "Lakeside Villas",
-                Address = "19 Harbor View Rd",
-                City = "Madison",
-                State = "WI",
-                ZipCode = "53703",
+                Name = "Nyali Palms",
+                Address = "Links Road, Nyali",
+                City = "Mombasa",
+                State = "Mombasa County",
+                ZipCode = "80100",
                 Units = 8,
-                Notes = "Townhome community near the lake trail."
+                Notes = "Beachside maisonettes a short walk from the reef."
             }
         };
 
@@ -80,26 +91,26 @@ public static class SeedData
         {
             new()
             {
-                FirstName = "Alicia",
-                LastName = "Gomez",
-                Email = "alicia.gomez@example.com",
-                Phone = "555-0110",
+                FirstName = "Wanjiru",
+                LastName = "Kamau",
+                Email = "wanjiru.kamau@example.com",
+                Phone = "+254 712 345 678",
                 MoveInDate = today.AddMonths(-4)
             },
             new()
             {
-                FirstName = "Marcus",
-                LastName = "Lee",
-                Email = "marcus.lee@example.com",
-                Phone = "555-0142",
+                FirstName = "Otieno",
+                LastName = "Odhiambo",
+                Email = "otieno.odhiambo@example.com",
+                Phone = "+254 722 987 654",
                 MoveInDate = today.AddMonths(-14)
             },
             new()
             {
-                FirstName = "Priya",
-                LastName = "Shah",
-                Email = "priya.shah@example.com",
-                Phone = "555-0188",
+                FirstName = "Aisha",
+                LastName = "Hassan",
+                Email = "aisha.hassan@example.com",
+                Phone = "+254 733 456 789",
                 MoveInDate = today.AddMonths(-2)
             }
         };
@@ -112,7 +123,8 @@ public static class SeedData
                 Tenant = tenants[0],
                 StartDate = today.AddMonths(-4),
                 EndDate = today.AddMonths(8),
-                MonthlyRent = 1650m,
+                MonthlyRent = 85000m,
+                SecurityDeposit = 85000m,
                 Status = "Active"
             },
             new()
@@ -121,7 +133,8 @@ public static class SeedData
                 Tenant = tenants[1],
                 StartDate = today.AddMonths(-14),
                 EndDate = today.AddMonths(2),
-                MonthlyRent = 2100m,
+                MonthlyRent = 95000m,
+                SecurityDeposit = 95000m,
                 Status = "Pending Renewal"
             },
             new()
@@ -130,7 +143,8 @@ public static class SeedData
                 Tenant = tenants[2],
                 StartDate = today.AddMonths(-2),
                 EndDate = today.AddMonths(10),
-                MonthlyRent = 1750m,
+                MonthlyRent = 75000m,
+                SecurityDeposit = 75000m,
                 Status = "Active"
             }
         };
@@ -141,29 +155,29 @@ public static class SeedData
             {
                 Lease = leases[0],
                 PaymentDate = today.AddMonths(-2),
-                Amount = 1650m,
-                Method = "Bank Transfer"
+                Amount = 85000m,
+                Method = "M-PESA"
             },
             new()
             {
                 Lease = leases[0],
                 PaymentDate = today.AddMonths(-1),
-                Amount = 1650m,
-                Method = "Bank Transfer"
+                Amount = 85000m,
+                Method = "M-PESA"
             },
             new()
             {
                 Lease = leases[1],
                 PaymentDate = today.AddMonths(-1).AddDays(2),
-                Amount = 2100m,
-                Method = "Check"
+                Amount = 95000m,
+                Method = "Cheque"
             },
             new()
             {
                 Lease = leases[2],
                 PaymentDate = today.AddMonths(-1),
-                Amount = 1750m,
-                Method = "ACH"
+                Amount = 75000m,
+                Method = "M-PESA"
             }
         };
 
@@ -192,7 +206,7 @@ public static class SeedData
             new()
             {
                 TransactionDate = today.AddMonths(-2),
-                Amount = 1650m,
+                Amount = 85000m,
                 Category = "Rent",
                 Type = "Income",
                 PropertyId = propertyId,
@@ -202,7 +216,7 @@ public static class SeedData
             new()
             {
                 TransactionDate = today.AddMonths(-1),
-                Amount = 1650m,
+                Amount = 85000m,
                 Category = "Rent",
                 Type = "Income",
                 PropertyId = propertyId,
@@ -212,7 +226,7 @@ public static class SeedData
             new()
             {
                 TransactionDate = today.AddDays(-12),
-                Amount = 320m,
+                Amount = 12500m,
                 Category = "Maintenance",
                 Type = "Expense",
                 PropertyId = propertyId,
@@ -221,7 +235,7 @@ public static class SeedData
             new()
             {
                 TransactionDate = today.AddDays(-5),
-                Amount = 85m,
+                Amount = 4500m,
                 Category = "Utilities",
                 Type = "Expense",
                 PropertyId = propertyId,
@@ -251,19 +265,19 @@ public static class SeedData
                 UnitId = 3,
                 Priority = "Medium",
                 Status = "Open",
-                EstimatedCost = 120m,
+                EstimatedCost = 8500m,
                 RequestDate = today.AddDays(-6)
             },
             new()
             {
-                Title = "HVAC not cooling",
+                Title = "Air conditioner not cooling",
                 Description = "Air conditioner runs but does not cool the apartment.",
                 PropertyId = properties[0].Id,
                 UnitId = 7,
                 Priority = "High",
                 Status = "In Progress",
-                AssignedTo = "CoolAir Services",
-                EstimatedCost = 450m,
+                AssignedTo = "CoolAir Kenya",
+                EstimatedCost = 25000m,
                 RequestDate = today.AddDays(-2)
             },
             new()
@@ -274,8 +288,8 @@ public static class SeedData
                 UnitId = 1,
                 Priority = "Low",
                 Status = "Completed",
-                AssignedTo = "Locksmith Pro",
-                EstimatedCost = 200m,
+                AssignedTo = "Nyali Locksmiths",
+                EstimatedCost = 10000m,
                 RequestDate = today.AddDays(-20),
                 CompletedDate = today.AddDays(-14)
             }
@@ -323,6 +337,80 @@ public static class SeedData
         };
 
         context.Documents.AddRange(documents);
+        await context.SaveChangesAsync();
+    }
+
+    private static async Task SeedInvoicesAsync(RentalContext context, DateTime today)
+    {
+        var tenants = await context.Tenants.OrderBy(t => t.Id).ToListAsync();
+        var properties = await context.Properties.OrderBy(p => p.Id).ToListAsync();
+        if (tenants.Count == 0 || properties.Count == 0)
+        {
+            return;
+        }
+
+        var tenant = tenants[0]; // Demo: first tenant (Wanjiru Kamau)
+        var property = properties[0]; // Demo: first property (Kilimani Heights)
+
+        var invoices = new List<Invoice>
+        {
+            new()
+            {
+                InvoiceNumber = "INV-0001",
+                TenantId = tenant.Id,
+                PropertyId = property.Id,
+                InvoiceDate = today.AddMonths(-2),
+                DueDate = today.AddMonths(-2).AddDays(5),
+                Status = "Paid",
+                AmountPaid = 88000m,
+                TotalAmount = 88000m,
+                Notes = "Rent, water and garbage.",
+                Lines = new List<InvoiceLine>
+                {
+                    new() { Description = "Rent", Amount = 85000m },
+                    new() { Description = "Water", Amount = 2500m },
+                    new() { Description = "Garbage", Amount = 500m }
+                }
+            },
+            new()
+            {
+                InvoiceNumber = "INV-0002",
+                TenantId = tenant.Id,
+                PropertyId = property.Id,
+                InvoiceDate = today.AddMonths(-1),
+                DueDate = today.AddMonths(-1).AddDays(5),
+                Status = "Paid",
+                AmountPaid = 87800m,
+                TotalAmount = 87800m,
+                Notes = "Rent, water and garbage.",
+                Lines = new List<InvoiceLine>
+                {
+                    new() { Description = "Rent", Amount = 85000m },
+                    new() { Description = "Water", Amount = 2300m },
+                    new() { Description = "Garbage", Amount = 500m }
+                }
+            },
+            new()
+            {
+                InvoiceNumber = "INV-0003",
+                TenantId = tenant.Id,
+                PropertyId = property.Id,
+                InvoiceDate = today,
+                DueDate = today.AddDays(5),
+                Status = "Sent",
+                AmountPaid = 0m,
+                TotalAmount = 88200m,
+                Notes = "Rent, water and garbage.",
+                Lines = new List<InvoiceLine>
+                {
+                    new() { Description = "Rent", Amount = 85000m },
+                    new() { Description = "Water", Amount = 2700m },
+                    new() { Description = "Garbage", Amount = 500m }
+                }
+            }
+        };
+
+        context.Invoices.AddRange(invoices);
         await context.SaveChangesAsync();
     }
 }
