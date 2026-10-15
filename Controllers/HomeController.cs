@@ -52,4 +52,14 @@ public class HomeController : Controller
 
         return View(viewModel);
     }
+
+    /// <summary>
+    /// Target of the production exception handler (see Program.cs). Returns a
+    /// plain JSON 500 so API clients get a clean response instead of a 404.
+    /// </summary>
+    public IActionResult Error()
+    {
+        Response.StatusCode = 500;
+        return Json(new { message = "An unexpected error occurred." });
+    }
 }
