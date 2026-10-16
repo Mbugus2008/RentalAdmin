@@ -3,15 +3,20 @@
     ViewData["Title"] = "Tenants";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3">Tenants</h1>
-    <a class="btn btn-primary" asp-action="Create">Add Tenant</a>
+<div class="page-head">
+    <div>
+        <h1>Tenants</h1>
+        <div class="page-caption">People renting your units</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-primary" asp-action="Create">Add Tenant</a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
+<div class="card">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-hover">
+            <thead>
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
@@ -24,10 +29,15 @@
                 @foreach (var tenant in Model)
                 {
                     <tr>
-                        <td>@tenant.FullName</td>
-                        <td>@tenant.Email</td>
-                        <td>@tenant.Phone</td>
-                        <td>@tenant.Leases.Count</td>
+                        <td>
+                            <div class="cell-person">
+                                <span class="avatar">@string.Join("", (tenant.FullName ?? "?").Split(' ').Take(2).Select(p => p.FirstOrDefault()))</span>
+                                <a class="cell-title" asp-action="Details" asp-route-id="@tenant.Id">@tenant.FullName</a>
+                            </div>
+                        </td>
+                        <td><a class="cell-sub" href="mailto:@tenant.Email">@tenant.Email</a></td>
+                        <td><span class="cell-sub">@tenant.Phone</span></td>
+                        <td><span class="chip">@tenant.Leases.Count leases</span></td>
                         <td class="text-end">
                             <div class="btn-group">
                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@tenant.Id">Details</a>
@@ -42,4 +52,12 @@
             </tbody>
         </table>
     </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
+            <div class="empty-title">No tenants yet</div>
+            <div class="empty-sub">Register a tenant to get started.</div>
+        </div>
+    }
 </div>

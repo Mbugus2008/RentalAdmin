@@ -3,15 +3,20 @@
     ViewData["Title"] = "Leases";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3">Leases</h1>
-    <a class="btn btn-primary" asp-action="Create">Add Lease</a>
+<div class="page-head">
+    <div>
+        <h1>Leases</h1>
+        <div class="page-caption">Active and historical tenancy agreements</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-primary" asp-action="Create">Add Lease</a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
+<div class="card">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-hover">
+            <thead>
                 <tr>
                     <th>Property</th>
                     <th>Tenant</th>
@@ -26,12 +31,23 @@
                 @foreach (var lease in Model)
                 {
                     <tr>
-                        <td>@lease.Property?.Name</td>
-                        <td>@lease.Tenant?.FullName</td>
+                        <td><span class="cell-title">@lease.Property?.Name</span></td>
+                        <td><span class="cell-sub">@lease.Tenant?.FullName</span></td>
                         <td>@lease.StartDate.ToString("MMM dd, yyyy")</td>
                         <td>@lease.EndDate?.ToString("MMM dd, yyyy")</td>
-                        <td>@lease.MonthlyRent.ToString("C")</td>
-                        <td><span class="badge bg-secondary">@lease.Status</span></td>
+                        <td><span class="fw-semibold">@lease.MonthlyRent.ToString("C")</span></td>
+                        <td>
+                            @{
+                                var statusClass = (lease.Status ?? "") switch
+                                {
+                                    "Active" => "badge-soft-success",
+                                    "Pending Renewal" => "badge-soft-warning",
+                                    "Expired" => "badge-soft-danger",
+                                    _ => "badge-soft-info"
+                                };
+                            }
+                            <span class="badge @statusClass">@lease.Status</span>
+                        </td>
                         <td class="text-end">
                             <div class="btn-group">
                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@lease.Id">Details</a>
@@ -46,4 +62,12 @@
             </tbody>
         </table>
     </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+            <div class="empty-title">No leases yet</div>
+            <div class="empty-sub">Create a lease to link a tenant to a property.</div>
+        </div>
+    }
 </div>

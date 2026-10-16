@@ -1,0 +1,81 @@
+@model Transaction
+@{ ViewData["Title"] = "Record Transaction"; }
+
+<div class="page-head">
+    <div>
+        <div class="crumb"><a asp-action="Index">Transactions</a> / <span>New</span></div>
+        <h1>Record Transaction</h1>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="form-section-title">Transaction details</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="TransactionDate" class="form-label"></label>
+                    <input asp-for="TransactionDate" class="form-control" type="date" />
+                    <span asp-validation-for="TransactionDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Type" class="form-label"></label>
+                    <select asp-for="Type" class="form-select">
+                        <option value="Income">Income</option>
+                        <option value="Expense">Expense</option>
+                    </select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Amount" class="form-label"></label>
+                    <input asp-for="Amount" class="form-control" type="number" step="0.01" min="0" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label"></label>
+                    <input asp-for="Category" class="form-control" list="categoryOptions" placeholder="e.g. Rent, Water, Repairs" />
+                    <datalist id="categoryOptions">
+                        <option value="Rent"></option>
+                        <option value="Water"></option>
+                        <option value="Garbage"></option>
+                        <option value="Service Charge"></option>
+                        <option value="Security"></option>
+                        <option value="Maintenance"></option>
+                        <option value="Utilities"></option>
+                        <option value="Repairs"></option>
+                        <option value="Salary"></option>
+                        <option value="Other"></option>
+                    </datalist>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control" placeholder="Optional note" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="PropertyId" class="form-label">Property</label>
+                    @{ var properties = ViewData["PropertyId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList; }
+                    <select asp-for="PropertyId" class="form-select" asp-items="properties">
+                        <option value="">— None —</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TenantId" class="form-label">Tenant</label>
+                    @{ var tenants = ViewData["TenantId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList; }
+                    <select asp-for="TenantId" class="form-select" asp-items="tenants">
+                        <option value="">— None —</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Transaction</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

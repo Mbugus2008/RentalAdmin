@@ -1,0 +1,110 @@
+@model Invoice
+@{ ViewData["Title"] = "Invoice " + Model.InvoiceNumber; }
+
+<div class="page-head">
+    <div>
+        <div class="crumb"><a asp-action="Index">Invoices</a> / <span>@Model.InvoiceNumber</span></div>
+        <h1>Invoice @Model.InvoiceNumber</h1>
+        <div class="page-caption">@Model.Tenant?.FullName</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-secondary" asp-action="Index">Back</a>
+        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a class="btn btn-primary" asp-action="RecordPayment" asp-route-id="@Model.Id">Record Payment</a>
+    </div>
+</div>
+
+@{
+    var statusClass = (Model.Status ?? "") switch
+    {
+        "Paid" => "badge-soft-success",
+        "Partial" => "badge-soft-warning",
+        "Draft" => "badge-soft-neutral",
+        _ => "badge-soft-brand"
+    };
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-5">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Summary</span>
+                <span class="badge @statusClass">@Model.Status</span>
+            </div>
+            <div class="card-body">
+                <div class="detail-list">
+                    <div class="detail-row"><span class="k">Tenant</span><span class="v">@Model.Tenant?.FullName</span></div>
+                    <div class="detail-row"><span class="k">Property</span><span class="v">@(Model.Property?.Name ?? "—")</span></div>
+                    <div class="detail-row"><span class="k">Invoice date</span><span class="v">@Model.InvoiceDate.ToString("MMM dd, yyyy")</span></div>
+                    <div class="detail-row"><span class="k">Due date</span><span class="v">@(Model.DueDate?.ToString("MMM dd, yyyy") ?? "—")</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">Amounts</div>
+            <div class="card-body">
+                <div class="detail-list">
+                    <div class="detail-row"><span class="k">Total</span><span class="v">@Model.TotalAmount.ToString("C")</span></div>
+                    <div class="detail-row"><span class="k">Paid</span><span class="v">@Model.AmountPaid.ToString("C")</span></div>
+                    <div class="detail-row">
+                        <span class="k">Balance</span>
+                        <span class="v"><span class="@(Model.Balance > 0 ? "amount-expense" : "amount-income")">@Model.Balance.ToString("C")</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-header">Notes</div>
+            <div class="card-body">
+                @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                {
+                    <p class="mb-0">@Model.Notes</p>
+                }
+                else
+                {
+                    <p class="muted-note mb-0">No notes recorded.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="card">
+    <div class="card-header">
+        <span class="section-title">Invoice lines</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="text-end">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var line in Model.Lines)
+                {
+                    <tr>
+                        <td>@line.Description</td>
+                        <td class="text-end"><span class="fw-semibold">@line.Amount.ToString("C")</span></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="text-end fw-semibold">Total</td>
+                    <td class="text-end fw-bold">@Model.TotalAmount.ToString("C")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="form-actions" style="padding: 1rem 1.25rem; margin-top: 0; border-top: 0;">
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Delete this invoice?');">Delete Invoice</button>
+        </form>
+    </div>
+</section>

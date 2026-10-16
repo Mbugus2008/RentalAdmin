@@ -3,11 +3,17 @@
     ViewData["Title"] = "Add Tenant";
 }
 
-<h1 class="h3 mb-3">Add Tenant</h1>
+<div class="page-head">
+    <div>
+        <div class="crumb"><a asp-action="Index">Tenants</a> / <span>New</span></div>
+        <h1>Add Tenant</h1>
+    </div>
+</div>
 
-<div class="card shadow-sm border-0">
+<div class="card">
     <div class="card-body">
         <form asp-action="Create" method="post">
+            <div class="form-section-title">Tenant details</div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="FirstName" class="form-label"></label>
@@ -35,7 +41,7 @@
                     <span asp-validation-for="MoveInDate" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mt-4 d-flex justify-content-between">
+            <div class="form-actions">
                 <a class="btn btn-secondary" asp-action="Index">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save Tenant</button>
             </div>

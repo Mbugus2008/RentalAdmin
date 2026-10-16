@@ -22,9 +22,9 @@ public class PaymentsController : Controller
     {
         var payments = await _context.Payments
             .Include(p => p.Lease)
-                .ThenInclude(l => l.Property)
+                .ThenInclude(l => l!.Property)
             .Include(p => p.Lease)
-                .ThenInclude(l => l.Tenant)
+                .ThenInclude(l => l!.Tenant)
             .OrderByDescending(p => p.PaymentDate)
             .ToListAsync();
         return View(payments);

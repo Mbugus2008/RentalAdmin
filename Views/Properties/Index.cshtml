@@ -3,15 +3,20 @@
     ViewData["Title"] = "Properties";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3">Properties</h1>
-    <a class="btn btn-primary" asp-action="Create">Add Property</a>
+<div class="page-head">
+    <div>
+        <h1>Properties</h1>
+        <div class="page-caption">Portfolio of managed units</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-primary" asp-action="Create">Add Property</a>
+    </div>
 </div>
 
-<div class="card shadow-sm border-0">
+<div class="card">
     <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+        <table class="table table-hover">
+            <thead>
                 <tr>
                     <th>Name</th>
                     <th>Address</th>
@@ -24,13 +29,13 @@
                 @foreach (var property in Model)
                 {
                     <tr>
-                        <td>@property.Name</td>
+                        <td><a class="cell-title" asp-action="Details" asp-route-id="@property.Id">@property.Name</a></td>
                         <td>
                             <div>@property.Address</div>
-                            <div class="text-muted small">@property.City, @property.State @property.ZipCode</div>
+                            <div class="cell-sub">@property.City, @property.State @property.ZipCode</div>
                         </td>
-                        <td>@property.Units</td>
-                        <td>@property.Leases.Count</td>
+                        <td><span class="chip">@property.Units units</span></td>
+                        <td><span class="chip">@property.Leases.Count leases</span></td>
                         <td class="text-end">
                             <div class="btn-group">
                                 <a class="btn btn-sm btn-outline-secondary" asp-action="Details" asp-route-id="@property.Id">Details</a>
@@ -45,4 +50,12 @@
             </tbody>
         </table>
     </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>
+            <div class="empty-title">No properties yet</div>
+            <div class="empty-sub">Add your first property to get started.</div>
+        </div>
+    }
 </div>

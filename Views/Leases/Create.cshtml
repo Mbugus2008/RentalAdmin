@@ -6,11 +6,17 @@
     var tenants = ViewData["TenantId"] as SelectList;
 }
 
-<h1 class="h3 mb-3">Add Lease</h1>
+<div class="page-head">
+    <div>
+        <div class="crumb"><a asp-action="Index">Leases</a> / <span>New</span></div>
+        <h1>Add Lease</h1>
+    </div>
+</div>
 
-<div class="card shadow-sm border-0">
+<div class="card">
     <div class="card-body">
         <form asp-action="Create" method="post">
+            <div class="form-section-title">Parties</div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="PropertyId" class="form-label"></label>
@@ -22,6 +28,9 @@
                     <select asp-for="TenantId" class="form-select" asp-items="tenants"></select>
                     <span asp-validation-for="TenantId" class="text-danger"></span>
                 </div>
+            </div>
+            <div class="form-section-title" style="margin-top: 1.6rem;">Terms</div>
+            <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="StartDate" class="form-label"></label>
                     <input asp-for="StartDate" class="form-control" type="date" />
@@ -43,7 +52,7 @@
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mt-4 d-flex justify-content-between">
+            <div class="form-actions">
                 <a class="btn btn-secondary" asp-action="Index">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save Lease</button>
             </div>

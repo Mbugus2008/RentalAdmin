@@ -1,0 +1,73 @@
+@model RentalDocument
+@{ ViewData["Title"] = "Edit Document"; }
+
+<div class="page-head">
+    <div>
+        <div class="crumb"><a asp-action="Index">Documents</a> / <span>Edit</span></div>
+        <h1>Edit Document</h1>
+        <div class="page-caption">@Model.FileType · @(Model.FileSize > 0 ? ((Model.FileSize / 1024.0).ToString("N0") + " KB") : "—") · uploaded @Model.UploadDate.ToString("MMM dd, yyyy")</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-outline-secondary" asp-action="Download" asp-route-id="@Model.Id">Download file</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+            <div class="form-section-title">Document details</div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Category" class="form-label"></label>
+                    <select asp-for="Category" class="form-select">
+                        <option value="Lease Agreement">Lease Agreement</option>
+                        <option value="ID / KYC">ID / KYC</option>
+                        <option value="Receipt">Receipt</option>
+                        <option value="Inspection">Inspection</option>
+                        <option value="Insurance">Insurance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="PropertyId" class="form-label">Property</label>
+                    @{ var properties = ViewData["PropertyId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList; }
+                    <select asp-for="PropertyId" class="form-select" asp-items="properties">
+                        <option value="">— None —</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="TenantId" class="form-label">Tenant</label>
+                    @{ var tenants = ViewData["TenantId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList; }
+                    <select asp-for="TenantId" class="form-select" asp-items="tenants">
+                        <option value="">— None —</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ExpirationDate" class="form-label"></label>
+                    <input asp-for="ExpirationDate" class="form-control" type="date" />
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

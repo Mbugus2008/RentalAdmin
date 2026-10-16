@@ -3,12 +3,18 @@
     ViewData["Title"] = "Edit Property";
 }
 
-<h1 class="h3 mb-3">Edit Property</h1>
+<div class="page-head">
+    <div>
+        <div class="crumb"><a asp-action="Index">Properties</a> / <span>Edit</span></div>
+        <h1>Edit Property</h1>
+    </div>
+</div>
 
-<div class="card shadow-sm border-0">
+<div class="card">
     <div class="card-body">
         <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="Id" />
+            <div class="form-section-title">Property information</div>
             <div class="row g-3">
                 <div class="col-md-6">
                     <label asp-for="Name" class="form-label"></label>
@@ -46,7 +52,7 @@
                     <span asp-validation-for="Notes" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mt-4 d-flex justify-content-between">
+            <div class="form-actions">
                 <a class="btn btn-secondary" asp-action="Index">Cancel</a>
                 <button type="submit" class="btn btn-primary">Update Property</button>
             </div>

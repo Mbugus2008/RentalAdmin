@@ -1,0 +1,89 @@
+@model IEnumerable<RentalDocument>
+@{ ViewData["Title"] = "Documents"; }
+
+<div class="page-head">
+    <div>
+        <h1>Documents</h1>
+        <div class="page-caption">Lease agreements, IDs, receipts and other files</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-primary" asp-action="Create">Upload Document</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Linked to</th>
+                    <th>Type</th>
+                    <th>Uploaded</th>
+                    <th>Expires</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var document in Model)
+                {
+                    var expiresSoon = document.ExpirationDate.HasValue && document.ExpirationDate.Value.Date <= DateTime.Today.AddDays(30);
+                    <tr>
+                        <td>
+                            <div class="cell-title">@document.Title</div>
+                            @if (!string.IsNullOrWhiteSpace(document.Description))
+                            {
+                                <div class="cell-sub">@document.Description</div>
+                            }
+                        </td>
+                        <td><span class="badge badge-soft-purple">@document.Category</span></td>
+                        <td>
+                            @if (document.Property != null)
+                            {
+                                <div class="cell-sub">@document.Property.Name</div>
+                            }
+                            @if (document.Tenant != null)
+                            {
+                                <div class="cell-sub">@document.Tenant.FullName</div>
+                            }
+                            @if (document.Property == null && document.Tenant == null)
+                            {
+                                <span class="cell-sub">—</span>
+                            }
+                        </td>
+                        <td><span class="chip">@document.FileType</span></td>
+                        <td><span class="cell-sub">@document.UploadDate.ToString("MMM dd, yyyy")</span></td>
+                        <td>
+                            @if (document.ExpirationDate.HasValue)
+                            {
+                                <span class="badge @(expiresSoon ? "badge-soft-warning" : "badge-soft-neutral")">@document.ExpirationDate.Value.ToString("MMM dd, yyyy")</span>
+                            }
+                            else
+                            {
+                                <span class="cell-sub">—</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-secondary" asp-action="Download" asp-route-id="@document.Id">Download</a>
+                                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@document.Id">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@document.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this document and its file?');">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+            <div class="empty-title">No documents yet</div>
+            <div class="empty-sub">Upload lease agreements, IDs or receipts to keep them safe.</div>
+        </div>
+    }
+</div>

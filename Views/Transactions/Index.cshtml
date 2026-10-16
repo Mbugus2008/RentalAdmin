@@ -1,0 +1,106 @@
+@model IEnumerable<Transaction>
+@{ ViewData["Title"] = "Transactions"; }
+
+<div class="page-head">
+    <div>
+        <h1>Transactions</h1>
+        <div class="page-caption">Income and expense ledger</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-primary" asp-action="Create">Record Transaction</a>
+    </div>
+</div>
+
+@{
+    decimal totalIncome = ViewBag.TotalIncome ?? 0m;
+    decimal totalExpense = ViewBag.TotalExpense ?? 0m;
+}
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <span class="icon-chip green">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Total income</div>
+            <div class="stat-value">@totalIncome.ToString("C")</div>
+            <div class="stat-sub">All recorded income</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="icon-chip amber">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6" /><polyline points="17 18 23 18 23 12" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Total expenses</div>
+            <div class="stat-value">@totalExpense.ToString("C")</div>
+            <div class="stat-sub">All recorded expenses</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="icon-chip blue">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Net</div>
+            <div class="stat-value">@((totalIncome - totalExpense).ToString("C"))</div>
+            <div class="stat-sub">Income minus expenses</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Details</th>
+                    <th>Property</th>
+                    <th>Tenant</th>
+                    <th>Type</th>
+                    <th class="text-end">Amount</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var transaction in Model)
+                {
+                    var isIncome = string.Equals(transaction.Type, "Income", StringComparison.OrdinalIgnoreCase);
+                    <tr>
+                        <td>@transaction.TransactionDate.ToString("MMM dd, yyyy")</td>
+                        <td><span class="badge badge-soft-brand">@transaction.Category</span></td>
+                        <td><span class="cell-sub">@transaction.Description</span></td>
+                        <td><span class="cell-sub">@transaction.Property?.Name</span></td>
+                        <td><span class="cell-sub">@transaction.Tenant?.FullName</span></td>
+                        <td>
+                            <span class="badge @(isIncome ? "badge-soft-success" : "badge-soft-danger")">@transaction.Type</span>
+                        </td>
+                        <td class="text-end">
+                            <span class="@(isIncome ? "amount-income" : "amount-expense")">
+                                @(isIncome ? "+" : "−")@transaction.Amount.ToString("C")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@transaction.Id">Edit</a>
+                                <form asp-action="Delete" asp-route-id="@transaction.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this transaction?');">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+            <div class="empty-title">No transactions yet</div>
+            <div class="empty-sub">Record your first income or expense to build the ledger.</div>
+        </div>
+    }
+</div>

@@ -3,86 +3,111 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Properties</h6>
-                <div class="display-6 fw-bold">@Model.PropertyCount</div>
-                <p class="text-muted small mb-0">Total units managed</p>
-            </div>
+<div class="stat-grid">
+    <div class="stat-card">
+        <span class="icon-chip blue">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Properties</div>
+            <div class="stat-value">@Model.PropertyCount</div>
+            <div class="stat-sub">Total units managed</div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Active Leases</h6>
-                <div class="display-6 fw-bold">@Model.ActiveLeaseCount</div>
-                <p class="text-muted small mb-0">Currently occupied</p>
-            </div>
+    <div class="stat-card">
+        <span class="icon-chip indigo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 2l-2 2" /><path d="M7.61 11.61a5.5 5.5 0 1 0 7.78 7.78 5.5 5.5 0 0 0-7.78-7.78z" /><path d="M11.5 11.5 15.5 7.5l3 3L22 7l-3-3-3.5 3.5" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Active Leases</div>
+            <div class="stat-value">@Model.ActiveLeaseCount</div>
+            <div class="stat-sub">Currently occupied</div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Monthly Rent</h6>
-                <div class="display-6 fw-bold">@Model.TotalMonthlyRent.ToString("C")</div>
-                <p class="text-muted small mb-0">Scheduled this month</p>
-            </div>
+    <div class="stat-card">
+        <span class="icon-chip teal">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Monthly Rent</div>
+            <div class="stat-value">@Model.TotalMonthlyRent.ToString("C")</div>
+            <div class="stat-sub">Scheduled this month</div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-                <h6 class="text-uppercase text-muted">Payments Received</h6>
-                <div class="display-6 fw-bold text-success">@Model.PaymentsCollectedThisMonth.ToString("C")</div>
-                <p class="text-muted small mb-0">Collected this month</p>
-            </div>
+    <div class="stat-card">
+        <span class="icon-chip green">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Payments Received</div>
+            <div class="stat-value">@Model.PaymentsCollectedThisMonth.ToString("C")</div>
+            <div class="stat-sub">Collected this month</div>
         </div>
     </div>
 </div>
 
-<section class="card shadow-sm border-0">
-    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Upcoming lease expirations</h5>
+<section class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="section-title">Upcoming lease expirations</span>
         <a class="btn btn-outline-primary btn-sm" asp-controller="Leases" asp-action="Create">New Lease</a>
     </div>
-    <div class="card-body p-0">
-        @if (Model.UpcomingRenewals.Count > 0)
-        {
-            <div class="table-responsive">
-                <table class="table mb-0 align-middle">
-                    <thead class="table-light">
+    @if (Model.UpcomingRenewals.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Property</th>
+                        <th scope="col">Tenant</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Rent</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var lease in Model.UpcomingRenewals)
+                    {
                         <tr>
-                            <th scope="col">Property</th>
-                            <th scope="col">Tenant</th>
-                            <th scope="col">End Date</th>
-                            <th scope="col">Rent</th>
-                            <th scope="col">Status</th>
+                            <td><span class="cell-title">@lease.PropertyName</span></td>
+                            <td>
+                                <div class="cell-person">
+                                    <span class="avatar avatar-sm">@string.Join("", (lease.TenantName ?? "?").Split(' ').Take(2).Select(p => p.FirstOrDefault()))</span>
+                                    <span>@lease.TenantName</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div>@lease.EndDate?.ToString("MMM dd, yyyy")</div>
+                                @if (lease.EndDate.HasValue)
+                                {
+                                    var days = (lease.EndDate.Value.Date - DateTime.Today).Days;
+                                    <span class="cell-sub">@(days <= 0 ? "due" : $"in {days} days")</span>
+                                }
+                            </td>
+                            <td><span class="fw-semibold">@lease.MonthlyRent.ToString("C")</span></td>
+                            <td>
+                                @{
+                                    var statusClass = (lease.Status ?? "") switch
+                                    {
+                                        "Active" => "badge-soft-success",
+                                        "Pending Renewal" => "badge-soft-warning",
+                                        "Expired" => "badge-soft-danger",
+                                        _ => "badge-soft-info"
+                                    };
+                                }
+                                <span class="badge @statusClass">@lease.Status</span>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var lease in Model.UpcomingRenewals)
-                        {
-                            <tr>
-                                <td>@lease.PropertyName</td>
-                                <td>@lease.TenantName</td>
-                                <td>@lease.EndDate?.ToString("MMM dd, yyyy")</td>
-                                <td>@lease.MonthlyRent.ToString("C")</td>
-                                <td>
-                                    <span class="badge bg-secondary">@lease.Status</span>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="p-4 text-center text-muted">
-                All leases are secured beyond the next 60 days.
-            </div>
-        }
-    </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+            <div class="empty-title">All settled</div>
+            <div class="empty-sub">All leases are secured beyond the next 60 days.</div>
+        </div>
+    }
 </section>

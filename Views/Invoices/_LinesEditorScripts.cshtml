@@ -1,0 +1,62 @@
+<script>
+    (function () {
+        var list = document.getElementById('lines');
+        var tpl = document.getElementById('lineTemplate');
+        var totalEl = document.getElementById('linesTotal');
+
+        function updateTotal() {
+            var total = 0;
+            list.querySelectorAll('.amount-input').forEach(function (input) {
+                total += parseFloat(input.value) || 0;
+            });
+            totalEl.textContent = total.toFixed(2);
+        }
+
+        function renumber() {
+            list.querySelectorAll('.line-row').forEach(function (row, index) {
+                row.querySelectorAll('[name]').forEach(function (input) {
+                    input.name = input.name.replace(/Lines\[\d+\]/, 'Lines[' + index + ']');
+                });
+            });
+            updateTotal();
+        }
+
+        function addLine(description) {
+            var node = tpl.content.firstElementChild.cloneNode(true);
+            node.querySelector('[name$=".Description"]').value = description || '';
+            list.appendChild(node);
+            renumber();
+        }
+
+        document.getElementById('addLine').addEventListener('click', function () { addLine(''); });
+
+        document.querySelectorAll('[data-quick]').forEach(function (button) {
+            button.addEventListener('click', function () { addLine(button.getAttribute('data-quick')); });
+        });
+
+        list.addEventListener('click', function (event) {
+            var button = event.target.closest('.remove-line');
+            if (!button) {
+                return;
+            }
+            var rows = list.querySelectorAll('.line-row');
+            if (rows.length > 1) {
+                button.closest('.line-row').remove();
+                renumber();
+            } else {
+                var row = button.closest('.line-row');
+                row.querySelector('[name$=".Description"]').value = '';
+                row.querySelector('.amount-input').value = '';
+                updateTotal();
+            }
+        });
+
+        list.addEventListener('input', function (event) {
+            if (event.target.classList.contains('amount-input')) {
+                updateTotal();
+            }
+        });
+
+        renumber();
+    })();
+</script>

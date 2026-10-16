@@ -1,0 +1,230 @@
+@model Rental.ViewModels.ReportsViewModel
+@{ ViewData["Title"] = "Reports"; }
+
+<div class="page-head">
+    <div>
+        <h1>Reports</h1>
+        <div class="page-caption">Portfolio performance at a glance</div>
+    </div>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <span class="icon-chip green">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Total revenue</div>
+            <div class="stat-value">@Model.TotalRevenue.ToString("C")</div>
+            <div class="stat-sub">All recorded income</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="icon-chip amber">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6" /><polyline points="17 18 23 18 23 12" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Total expenses</div>
+            <div class="stat-value">@Model.TotalExpenses.ToString("C")</div>
+            <div class="stat-sub">All recorded expenses</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="icon-chip blue">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Net income</div>
+            <div class="stat-value">@Model.NetIncome.ToString("C")</div>
+            <div class="stat-sub">Revenue minus expenses</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <span class="icon-chip indigo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>
+        </span>
+        <div>
+            <div class="stat-label">Occupancy</div>
+            <div class="stat-value">@Model.OccupancyRate.ToString("0.#")%</div>
+            <div class="stat-sub">@Model.ActiveLeaseCount of @Model.UnitsCount units occupied</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Income by category</div>
+            @if (Model.IncomeByCategory.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Category</th><th class="text-end">Amount</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.IncomeByCategory)
+                            {
+                                <tr>
+                                    <td>@item.Category</td>
+                                    <td class="text-end"><span class="amount-income">@item.Amount.ToString("C")</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-title">No income recorded yet</div>
+                    <div class="empty-sub">Income transactions will appear here.</div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Expenses by category</div>
+            @if (Model.ExpenseByCategory.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Category</th><th class="text-end">Amount</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ExpenseByCategory)
+                            {
+                                <tr>
+                                    <td>@item.Category</td>
+                                    <td class="text-end"><span class="amount-expense">@item.Amount.ToString("C")</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-title">No expenses recorded yet</div>
+                    <div class="empty-sub">Expense transactions will appear here.</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Outstanding balances</span>
+                <span class="cell-sub">Invoiced @Model.InvoicedTotal.ToString("C") · Collected @Model.CollectedTotal.ToString("C")</span>
+            </div>
+            @if (Model.TenantBalances.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th class="text-end">Invoiced</th>
+                                <th class="text-end">Paid</th>
+                                <th class="text-end">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var balance in Model.TenantBalances)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="cell-person">
+                                            <span class="avatar avatar-sm">@string.Join("", (balance.TenantName ?? "?").Split(' ').Take(2).Select(p => p.FirstOrDefault()))</span>
+                                            <span>@balance.TenantName</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">@balance.Invoiced.ToString("C")</td>
+                                    <td class="text-end">@balance.Paid.ToString("C")</td>
+                                    <td class="text-end">
+                                        @if (balance.Balance > 0)
+                                        {
+                                            <span class="amount-expense">@balance.Balance.ToString("C")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-soft-success">Settled</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-title">No invoices yet</div>
+                    <div class="empty-sub">Tenant balances appear here once invoices exist.</div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Lease expirations</span>
+                <span class="cell-sub">Next 90 days</span>
+            </div>
+            @if (Model.ExpiringLeases.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Property / Tenant</th>
+                                <th>End date</th>
+                                <th class="text-end">Rent</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var lease in Model.ExpiringLeases)
+                            {
+                                var statusClass = (lease.Status ?? "") switch
+                                {
+                                    "Active" => "badge-soft-success",
+                                    "Pending Renewal" => "badge-soft-warning",
+                                    "Expired" => "badge-soft-danger",
+                                    _ => "badge-soft-info"
+                                };
+                                var days = lease.EndDate.HasValue ? (lease.EndDate.Value.Date - DateTime.Today).Days : 0;
+                                <tr>
+                                    <td>
+                                        <div class="cell-title">@lease.PropertyName</div>
+                                        <div class="cell-sub">@lease.TenantName</div>
+                                    </td>
+                                    <td>
+                                        <div>@lease.EndDate?.ToString("MMM dd, yyyy")</div>
+                                        <span class="cell-sub">@(days <= 0 ? "due" : $"in {days} days")</span>
+                                    </td>
+                                    <td class="text-end"><span class="fw-semibold">@lease.MonthlyRent.ToString("C")</span></td>
+                                    <td><span class="badge @statusClass">@lease.Status</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-title">Nothing expiring soon</div>
+                    <div class="empty-sub">No leases end within the next 90 days.</div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

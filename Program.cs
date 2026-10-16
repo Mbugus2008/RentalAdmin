@@ -7,6 +7,16 @@ using Microsoft.Extensions.Hosting;
 using Rental.Data;
 using Rental.Services;
 
+// Kenyan Shilling everywhere: currency renders as "KSh 75,500.00", matching the mobile app.
+var kenyanCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.GetCultureInfo("en-KE").Clone();
+kenyanCulture.NumberFormat.CurrencySymbol = "KSh";
+kenyanCulture.NumberFormat.CurrencyPositivePattern = 2; // "KSh 75,500.00"
+kenyanCulture.NumberFormat.CurrencyNegativePattern = 9; // "-KSh 75,500.00"
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture = kenyanCulture;
+System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = kenyanCulture;
+System.Globalization.CultureInfo.CurrentCulture = kenyanCulture;
+System.Globalization.CultureInfo.CurrentUICulture = kenyanCulture;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
@@ -50,6 +60,14 @@ builder.Services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Apply the Kenyan culture to every request (deterministic per-request culture).
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(kenyanCulture),
+    SupportedCultures = new[] { kenyanCulture },
+    SupportedUICultures = new[] { kenyanCulture }
+});
 
 using (var scope = app.Services.CreateScope())
 {
