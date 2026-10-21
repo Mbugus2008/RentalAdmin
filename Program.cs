@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,12 +38,40 @@ builder.Services.AddDbContext<RentalContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// JWT authentication for the /api/* endpoints used by the Flutter app.
+builder.Services.AddMemoryCache();
+
+// The admin console signs staff in with cookie sessions, while the Flutter app
+// keeps using JWT bearer tokens on /api/*. One policy scheme forwards each
+// request to the right handler based on its path.
 builder.Services.AddSingleton<JwtService>();
+
+const string adminOrApiScheme = "AdminOrApi";
 
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "dev-only-super-secret-key-please-change-1234567890";
 builder.Services
-    .AddAuthentication("Bearer")
+    .AddAuthentication(options =>
+    {
+        options.DefaultScheme = adminOrApiScheme;
+        options.DefaultChallengeScheme = adminOrApiScheme;
+    })
+    .AddPolicyScheme(adminOrApiScheme, "Cookie for the admin console, JWT for the API", options =>
+    {
+        options.ForwardDefaultSelector = context =>
+            context.Request.Path.StartsWithSegments("/api")
+                ? JwtBearerDefaults.AuthenticationScheme
+                : CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/Login";
+        options.Cookie.Name = "RentalAdmin.Session";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+        options.ExpireTimeSpan = System.TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -57,7 +87,15 @@ builder.Services
             ClockSkew = System.TimeSpan.FromMinutes(1)
         };
     });
-builder.Services.AddAuthorization();
+
+builder.Services.AddAuthorization(options =>
+{
+    // The admin console is private: every page requires a signed-in user unless
+    // the controller or action opts out with [AllowAnonymous].
+    options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 var app = builder.Build();
 

@@ -1,0 +1,41 @@
+@{
+    var title = ViewData["Title"] as string ?? "Sign in";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title - Rental Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="auth-body">
+    <div class="auth-wrap">
+        <div class="auth-brand">
+            <span class="brand-mark">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 9.5 12 3l9 6.5" />
+                    <path d="M5 10v10h14V10" />
+                    <path d="M9 20v-6h6v6" />
+                </svg>
+            </span>
+            <span>
+                <span class="brand-name d-block">Rental Manager</span>
+                <span class="brand-sub">Admin console</span>
+            </span>
+        </div>
+
+        <div class="auth-card">
+            @RenderBody()
+        </div>
+
+        <div class="auth-foot">&copy; @DateTime.Now.Year Rental Manager &mdash; administrative panel &middot; <a href="/">Homepage</a></div>
+    </div>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

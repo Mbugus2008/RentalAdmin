@@ -1,6 +1,19 @@
 @{
     var title = ViewData["Title"] as string ?? "Dashboard";
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var displayName = User.Identity?.Name ?? "Administrator";
+    var roleName = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "User";
+    var initials = string.Concat(displayName
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        .Select(part => char.ToUpperInvariant(part[0])));
+    if (initials.Length > 2)
+    {
+        initials = initials[..2];
+    }
+    else if (initials.Length == 0)
+    {
+        initials = "A";
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -153,7 +166,31 @@
                 </div>
                 <div class="topbar-meta">
                     <span class="env-chip">ADMIN</span>
-                    <span>@DateTime.Now.ToString("ddd, dd MMM yyyy")</span>
+                    <span class="topbar-date">@DateTime.Now.ToString("ddd, dd MMM yyyy")</span>
+
+                    <div class="dropdown user-menu">
+                        <button class="user-menu-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="user-avatar">@initials</span>
+                            <span class="user-text">
+                                <span class="user-name">@displayName</span>
+                                <span class="user-role">@roleName</span>
+                            </span>
+                            <svg class="user-caret" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="6 9 12 15 18 9" />
+                            </svg>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">Change password</a>
+                            </li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="signout-form">
+                                    <button type="submit" class="dropdown-item">Sign out</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </header>
 

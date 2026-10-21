@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rental.Data;
@@ -17,8 +18,16 @@ public class HomeController : Controller
         _context = context;
     }
 
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
+        // Anonymous visitors get the public marketing homepage; signed-in staff
+        // go straight to the dashboard.
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return View("Landing");
+        }
+
         var today = DateTime.Today;
         var monthStart = new DateTime(today.Year, today.Month, 1);
         var nextMonth = monthStart.AddMonths(1);
@@ -57,6 +66,7 @@ public class HomeController : Controller
     /// Target of the production exception handler (see Program.cs). Returns a
     /// plain JSON 500 so API clients get a clean response instead of a 404.
     /// </summary>
+    [AllowAnonymous]
     public IActionResult Error()
     {
         Response.StatusCode = 500;
