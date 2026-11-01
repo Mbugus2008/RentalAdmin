@@ -11,6 +11,7 @@ using Rental.ViewModels;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.FinanceArea)]
 public class InvoicesController : Controller
 {
     private readonly RentalContext _context;

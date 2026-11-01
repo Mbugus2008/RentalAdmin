@@ -25,7 +25,7 @@
         <div>
             <div class="stat-label">Open</div>
             <div class="stat-value">@openCount</div>
-            <div class="stat-sub">Awaiting action</div>
+            <div class="stat-sub">Open or assigned</div>
         </div>
     </div>
     <div class="stat-card">
@@ -35,7 +35,7 @@
         <div>
             <div class="stat-label">In progress</div>
             <div class="stat-value">@inProgressCount</div>
-            <div class="stat-sub">Being worked on</div>
+            <div class="stat-sub">Including pending</div>
         </div>
     </div>
     <div class="stat-card">
@@ -75,12 +75,7 @@
                         "Medium" => "badge-soft-info",
                         _ => "badge-soft-neutral"
                     };
-                    var statusClass = (request.Status ?? "") switch
-                    {
-                        "Completed" => "badge-soft-success",
-                        "In Progress" => "badge-soft-info",
-                        _ => "badge-soft-warning"
-                    };
+                    var statusClass = Rental.Services.MaintenanceStatus.BadgeClass(request.Status);
                     <tr>
                         <td>
                             <div class="cell-title">@request.Title</div>

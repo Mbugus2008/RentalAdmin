@@ -8,6 +8,7 @@ using Rental.ViewModels;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.LedgerArea)]
 public class ReportsController : Controller
 {
     private readonly RentalContext _context;

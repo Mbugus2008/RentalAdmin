@@ -9,6 +9,7 @@ using Rental.Models;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.FinanceArea)]
 public class PaymentsController : Controller
 {
     private readonly RentalContext _context;

@@ -1,6 +1,7 @@
 @model IEnumerable<Tenant>
 @{
     ViewData["Title"] = "Tenants";
+    var payStatuses = ViewBag.PaymentStatuses as System.Collections.Generic.Dictionary<int, string> ?? new System.Collections.Generic.Dictionary<int, string>();
 }
 
 <div class="page-head">
@@ -21,6 +22,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Rent status</th>
                     <th>Leases</th>
                     <th></th>
                 </tr>
@@ -37,6 +39,17 @@
                         </td>
                         <td><a class="cell-sub" href="mailto:@tenant.Email">@tenant.Email</a></td>
                         <td><span class="cell-sub">@tenant.Phone</span></td>
+                        <td>
+                            @if (payStatuses.TryGetValue(tenant.Id, out var payStatus))
+                            {
+                                var payClass = payStatus == "Paid" ? "badge-soft-success" : payStatus == "Partial" ? "badge-soft-warning" : "badge-soft-danger";
+                                <span class="badge @payClass">@payStatus</span>
+                            }
+                            else
+                            {
+                                <span class="cell-sub">—</span>
+                            }
+                        </td>
                         <td><span class="chip">@tenant.Leases.Count leases</span></td>
                         <td class="text-end">
                             <div class="btn-group">

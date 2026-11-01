@@ -9,6 +9,7 @@ using Rental.Models;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.MaintenanceArea)]
 public class MaintenanceController : Controller
 {
     private readonly RentalContext _context;
@@ -26,9 +27,14 @@ public class MaintenanceController : Controller
             .ThenByDescending(m => m.Id)
             .ToListAsync();
 
-        ViewBag.OpenCount = requests.Count(r => string.Equals(r.Status, "Open", StringComparison.OrdinalIgnoreCase));
-        ViewBag.InProgressCount = requests.Count(r => string.Equals(r.Status, "In Progress", StringComparison.OrdinalIgnoreCase));
-        ViewBag.CompletedCount = requests.Count(r => string.Equals(r.Status, "Completed", StringComparison.OrdinalIgnoreCase));
+        ViewBag.OpenCount = requests.Count(r =>
+            string.Equals(r.Status, Rental.Services.MaintenanceStatus.Open, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(r.Status, Rental.Services.MaintenanceStatus.Assigned, StringComparison.OrdinalIgnoreCase));
+        ViewBag.InProgressCount = requests.Count(r =>
+            string.Equals(r.Status, Rental.Services.MaintenanceStatus.InProgress, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(r.Status, Rental.Services.MaintenanceStatus.Pending, StringComparison.OrdinalIgnoreCase));
+        ViewBag.CompletedCount = requests.Count(r =>
+            string.Equals(r.Status, Rental.Services.MaintenanceStatus.Completed, StringComparison.OrdinalIgnoreCase));
 
         return View(requests);
     }

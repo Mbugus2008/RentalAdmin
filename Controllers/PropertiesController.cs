@@ -7,6 +7,7 @@ using Rental.Models;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.PortfolioArea)]
 public class PropertiesController : Controller
 {
     private readonly RentalContext _context;
@@ -18,10 +19,26 @@ public class PropertiesController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var today = DateTime.Today;
         var properties = await _context.Properties
             .Include(p => p.Leases)
             .OrderBy(p => p.Name)
             .ToListAsync();
+
+        // Agent-facing status: Maintenance (open requests) > Occupied (active lease) > Vacant.
+        var maintenanceIds = (await _context.MaintenanceRequests
+                .Select(m => new { m.PropertyId, m.Status })
+                .ToListAsync())
+            .Where(m => !Rental.Services.MaintenanceStatus.IsClosed(m.Status))
+            .Select(m => m.PropertyId ?? 0)
+            .ToHashSet();
+        var occupiedIds = properties
+            .Where(p => p.Leases.Any(l => l.EndDate == null || l.EndDate >= today))
+            .Select(p => p.Id)
+            .ToHashSet();
+
+        ViewBag.MaintenancePropertyIds = maintenanceIds;
+        ViewBag.OccupiedPropertyIds = occupiedIds;
         return View(properties);
     }
 

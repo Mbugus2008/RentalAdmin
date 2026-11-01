@@ -7,6 +7,7 @@ using Rental.Models;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.PortfolioArea)]
 public class TenantsController : Controller
 {
     private readonly RentalContext _context;
@@ -24,6 +25,16 @@ public class TenantsController : Controller
             .OrderBy(t => t.LastName)
             .ThenBy(t => t.FirstName)
             .ToListAsync();
+
+        // Agent-facing payment status from invoice balances.
+        var invoiceSums = await _context.Invoices
+            .GroupBy(i => i.TenantId)
+            .Select(g => new { TenantId = g.Key, Total = g.Sum(i => i.TotalAmount), Paid = g.Sum(i => i.AmountPaid) })
+            .ToListAsync();
+        ViewBag.PaymentStatuses = invoiceSums.ToDictionary(
+            x => x.TenantId,
+            x => x.Paid >= x.Total ? "Paid" : x.Paid <= 0 ? "Unpaid" : "Partial");
+
         return View(tenants);
     }
 

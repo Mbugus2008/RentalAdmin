@@ -40,7 +40,15 @@ public class AuthApiController : ControllerBase
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
-        return Ok(new { token = _jwt.GenerateToken(user) });
+        return Ok(new
+        {
+            token = _jwt.GenerateToken(user),
+            role = Roles.Normalize(user.Role),
+            userId = user.Id,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            email = user.Email
+        });
     }
 
     [HttpPost("register")]
@@ -68,7 +76,7 @@ public class AuthApiController : ControllerBase
             Email = email,
             PhoneNumber = (request.PhoneNumber ?? request.Phone)?.Trim(),
             PasswordHash = PasswordHasher.Hash(request.Password),
-            Role = "Landlord",
+            Role = Roles.Owner,
             CreatedAt = DateTime.UtcNow
         };
 

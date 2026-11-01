@@ -27,7 +27,7 @@ public static class SeedData
                 LastName = "Landlord",
                 Email = "admin@rental.local",
                 PhoneNumber = "+254 700 000 100",
-                Role = "Landlord",
+                Role = "Admin",
                 PasswordHash = PasswordHasher.Hash("Admin123!"),
                 CreatedAt = DateTime.UtcNow
             });

@@ -25,8 +25,27 @@ public class PropertiesApiController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
+        var today = DateTime.Today;
         var items = await _context.Properties.OrderBy(p => p.Name).ToListAsync();
-        return Ok(items.Select(ApiMap.Property));
+
+        // Agent-facing status: Maintenance (open requests) > Occupied (active lease) > Vacant.
+        var maintenanceSet = (await _context.MaintenanceRequests
+                .Where(m => m.PropertyId != null)
+                .Select(m => new { m.PropertyId, m.Status })
+                .ToListAsync())
+            .Where(m => !Rental.Services.MaintenanceStatus.IsClosed(m.Status))
+            .Select(m => m.PropertyId!.Value)
+            .ToHashSet();
+        var occupiedSet = (await _context.Leases
+                .Where(l => l.PropertyId != null && (l.EndDate == null || l.EndDate >= today))
+                .Select(l => l.PropertyId!.Value)
+                .ToListAsync())
+            .ToHashSet();
+
+        string StatusOf(int id) => maintenanceSet.Contains(id) ? "Maintenance"
+            : occupiedSet.Contains(id) ? "Occupied" : "Vacant";
+
+        return Ok(items.Select(p => ApiMap.Property(p, StatusOf(p.Id))));
     }
 
     [HttpGet("{id:int}")]

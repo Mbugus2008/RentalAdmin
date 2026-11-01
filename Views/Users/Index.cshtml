@@ -1,0 +1,104 @@
+@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Users";
+    int currentUserId = ViewBag.CurrentUserId ?? 0;
+}
+
+<div class="page-head">
+    <div>
+        <h1>Users</h1>
+        <div class="page-caption">Staff accounts and what they can do</div>
+    </div>
+    <div class="head-actions">
+        <a class="btn btn-primary" asp-action="Create">Add User</a>
+    </div>
+</div>
+
+@if (TempData["UsersSaved"] != null)
+{
+    <div class="alert-soft success">@TempData["UsersSaved"]</div>
+}
+@if (TempData["UsersError"] != null)
+{
+    <div class="alert-soft" style="background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C;">@TempData["UsersError"]</div>
+}
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>User type</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    var role = Rental.Services.Roles.Normalize(user.Role);
+                    var roleClass = role switch
+                    {
+                        "Admin" => "badge-soft-brand",
+                        "Owner" => "badge-soft-success",
+                        "Finance" => "badge-soft-info",
+                        "Agent" => "badge-soft-warning",
+                        "Maintenance" => "badge-soft-purple",
+                        _ => "badge-soft-neutral"
+                    };
+                    <tr>
+                        <td>
+                            <div class="cell-person">
+                                <span class="avatar">@string.Join("", ((user.FirstName + " " + user.LastName).Trim()).Split(' ').Take(2).Select(p => p.FirstOrDefault()))</span>
+                                <div>
+                                    <a class="cell-title" asp-action="Edit" asp-route-id="@user.Id">@user.FirstName @user.LastName</a>
+                                    @if (user.Id == currentUserId)
+                                    {
+                                        <div class="cell-sub">That's you</div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td><a class="cell-sub" href="mailto:@user.Email">@user.Email</a></td>
+                        <td><span class="badge @roleClass">@role</span></td>
+                        <td><span class="cell-sub">@user.CreatedAt.ToString("MMM dd, yyyy")</span></td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+                                @if (user.Id != currentUserId)
+                                {
+                                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Remove this user?');">Delete</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /></svg>
+            <div class="empty-title">No users yet</div>
+            <div class="empty-sub">Add a staff account to get started.</div>
+        </div>
+    }
+</div>
+
+<div class="card" style="max-width: 760px;">
+    <div class="card-body">
+        <div class="form-section-title" style="margin-top:0;">What each user type can do</div>
+        <ul style="margin:0;padding-left:1.2rem;color:var(--muted);font-size:.875rem;">
+            <li><strong>Admin</strong> — everything, including users and settings.</li>
+            <li><strong>Owner</strong> — full portfolio, billing, ledger and reports (no user management).</li>
+            <li><strong>Finance</strong> — dashboard, invoices, payments, transactions and reports.</li>
+            <li><strong>Agent</strong> — properties, tenants, leases, maintenance, documents, payments and invoice status.</li>
+            <li><strong>Maintenance</strong> — maintenance requests only; lands on the job list after sign-in.</li>
+        </ul>
+    </div>
+</div>

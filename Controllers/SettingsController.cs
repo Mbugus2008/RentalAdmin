@@ -7,6 +7,7 @@ using Rental.Models;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.AdminArea)]
 public class SettingsController : Controller
 {
     private readonly RentalContext _context;

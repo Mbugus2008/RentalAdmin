@@ -143,7 +143,7 @@ public class ExportReportRequest
 
 public static class ApiMap
 {
-    public static object Property(Models.Property p) => new
+    public static object Property(Models.Property p, string? status = null) => new
     {
         id = p.Id,
         name = p.Name,
@@ -157,11 +157,12 @@ public static class ApiMap
         purchasePrice = p.PurchasePrice,
         marketValue = p.MarketValue,
         description = p.Notes,
+        status,
         createdAt = p.CreatedAt,
         updatedAt = p.UpdatedAt
     };
 
-    public static object Tenant(Models.Tenant t) => new
+    public static object Tenant(Models.Tenant t, string? paymentStatus = null) => new
     {
         id = t.Id,
         firstName = t.FirstName,
@@ -171,6 +172,7 @@ public static class ApiMap
         emergencyContactName = t.EmergencyContactName,
         emergencyContactPhone = t.EmergencyContactPhone,
         notes = t.Notes,
+        paymentStatus,
         createdAt = t.CreatedAt,
         updatedAt = t.UpdatedAt
     };
@@ -279,7 +281,7 @@ public static class ApiMap
         lastName = u.LastName,
         email = u.Email,
         phoneNumber = u.PhoneNumber,
-        role = u.Role,
+        role = Services.Roles.Normalize(u.Role),
         createdAt = u.CreatedAt
     };
 }

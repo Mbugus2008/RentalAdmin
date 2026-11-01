@@ -46,11 +46,7 @@
                 </div>
                 <div class="col-md-3">
                     <label asp-for="Status" class="form-label"></label>
-                    <select asp-for="Status" class="form-select">
-                        <option value="Open">Open</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                    </select>
+                    <select asp-for="Status" class="form-select" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Rental.Services.MaintenanceStatus.All, Model.Status))"></select>
                 </div>
                 <div class="col-md-3">
                     <label asp-for="AssignedTo" class="form-label"></label>

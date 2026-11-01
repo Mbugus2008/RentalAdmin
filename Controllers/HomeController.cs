@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Rental.Data;
@@ -9,13 +11,16 @@ using Rental.ViewModels;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.DashboardArea)]
 public class HomeController : Controller
 {
     private readonly RentalContext _context;
+    private readonly IWebHostEnvironment _env;
 
-    public HomeController(RentalContext context)
+    public HomeController(RentalContext context, IWebHostEnvironment env)
     {
         _context = context;
+        _env = env;
     }
 
     [AllowAnonymous]
@@ -71,5 +76,22 @@ public class HomeController : Controller
     {
         Response.StatusCode = 500;
         return Json(new { message = "An unexpected error occurred." });
+    }
+
+    /// <summary>
+    /// Public download of the Android APK linked from the landing page.
+    /// Served with the APK content type so browsers save it as an installable file.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("/download/app")]
+    public IActionResult DownloadApp()
+    {
+        var path = Path.Combine(_env.WebRootPath, "downloads", "rental-management.apk");
+        if (!System.IO.File.Exists(path))
+        {
+            return NotFound();
+        }
+
+        return PhysicalFile(path, "application/vnd.android.package-archive", "RentalManagement-v1.0.1.apk");
     }
 }

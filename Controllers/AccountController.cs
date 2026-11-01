@@ -39,7 +39,7 @@ public class AccountController : Controller
     {
         if (User.Identity?.IsAuthenticated == true)
         {
-            return RedirectToAction("Index", "Home");
+            return HomeForRole(User.FindFirst(ClaimTypes.Role)?.Value);
         }
 
         return View(new LoginViewModel { ReturnUrl = returnUrl });
@@ -82,7 +82,7 @@ public class AccountController : Controller
             new("uid", user.Id.ToString()),
             new(ClaimTypes.Name, $"{user.FirstName} {user.LastName}".Trim()),
             new(ClaimTypes.Email, user.Email),
-            new(ClaimTypes.Role, user.Role)
+            new(ClaimTypes.Role, Roles.Normalize(user.Role))
         };
 
         var properties = new AuthenticationProperties { IsPersistent = model.RememberMe };
@@ -101,7 +101,20 @@ public class AccountController : Controller
             return Redirect(model.ReturnUrl);
         }
 
-        return RedirectToAction("Index", "Home");
+        return HomeForRole(Roles.Normalize(user.Role));
+    }
+
+    /// <summary>Maintenance staff land straight on their job list; everyone else on the dashboard.</summary>
+    private IActionResult HomeForRole(string? role) =>
+        string.Equals(Roles.Normalize(role), Roles.Maintenance, StringComparison.OrdinalIgnoreCase)
+            ? RedirectToAction("Index", "Maintenance")
+            : RedirectToAction("Index", "Home");
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
     }
 
     [Authorize]

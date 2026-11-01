@@ -35,6 +35,7 @@ public class SettingsApiController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = Rental.Services.Roles.AdminArea)]
     public async Task<IActionResult> Update([FromBody] SettingsRequest request)
     {
         var settings = await _context.AppSettings.FirstOrDefaultAsync();

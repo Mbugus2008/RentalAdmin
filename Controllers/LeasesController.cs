@@ -8,6 +8,7 @@ using Rental.Models;
 
 namespace Rental.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize(Roles = Rental.Services.Roles.PortfolioArea)]
 public class LeasesController : Controller
 {
     private readonly RentalContext _context;

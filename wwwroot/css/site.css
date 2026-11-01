@@ -1477,3 +1477,117 @@ html {
         padding: 3rem 0 3.4rem;
     }
 }
+
+/* ---------- Download the app ---------- */
+
+.download-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 2.5rem;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 6px);
+    box-shadow: var(--shadow-md);
+    padding: 2.6rem 2.8rem;
+}
+
+.hero-badge.on-light {
+    background: var(--brand-soft);
+    border: 1px solid rgba(37, 99, 235, .25);
+    color: var(--brand);
+}
+
+.download-copy h2 {
+    font-weight: 800;
+    letter-spacing: -.02em;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    margin: .9rem 0 .6rem;
+}
+
+.download-lead {
+    color: var(--muted);
+    margin-bottom: 1.1rem;
+    max-width: 34rem;
+}
+
+.download-steps {
+    margin: 0 0 1.5rem;
+    padding-left: 1.2rem;
+    color: var(--ink-2);
+    font-size: .9rem;
+}
+
+.download-steps li {
+    margin-bottom: .45rem;
+}
+
+.download-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.btn-download {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+    background: linear-gradient(135deg, #1E3A8A, #2563EB);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 1.02rem;
+    padding: .8rem 1.6rem;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 12px 26px rgba(37, 99, 235, .35);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.btn-download span {
+    font-size: .7rem;
+    font-weight: 500;
+    color: #BFDBFE;
+    letter-spacing: .04em;
+}
+
+.btn-download:hover {
+    transform: translateY(-1px);
+    color: #FFFFFF;
+    box-shadow: 0 16px 32px rgba(37, 99, 235, .42);
+}
+
+.download-note {
+    color: var(--muted);
+    font-size: .8rem;
+}
+
+.download-shot {
+    display: flex;
+    justify-content: center;
+}
+
+.app-frame {
+    width: 285px;
+    border-radius: 34px;
+    overflow: hidden;
+    border: 1.5px solid var(--border);
+    background: #0B1120;
+    box-shadow: 0 26px 60px rgba(15, 23, 42, .22);
+}
+
+.app-frame img {
+    width: 100%;
+    display: block;
+}
+
+@media (max-width: 991.98px) {
+    .download-card {
+        grid-template-columns: 1fr;
+        padding: 2rem 1.6rem;
+    }
+
+    .download-shot {
+        order: -1;
+    }
+}

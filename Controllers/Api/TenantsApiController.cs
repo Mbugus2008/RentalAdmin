@@ -26,7 +26,25 @@ public class TenantsApiController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var items = await _context.Tenants.OrderBy(t => t.LastName).ThenBy(t => t.FirstName).ToListAsync();
-        return Ok(items.Select(ApiMap.Tenant));
+
+        // Agent-facing payment status from invoice balances.
+        var invoiceSums = (await _context.Invoices
+                .GroupBy(i => i.TenantId)
+                .Select(g => new { TenantId = g.Key, Total = g.Sum(i => i.TotalAmount), Paid = g.Sum(i => i.AmountPaid) })
+                .ToListAsync())
+            .ToDictionary(x => x.TenantId, x => x);
+
+        string PayStatusOf(int id)
+        {
+            if (!invoiceSums.TryGetValue(id, out var sums))
+            {
+                return "—";
+            }
+
+            return sums.Paid >= sums.Total ? "Paid" : sums.Paid <= 0 ? "Unpaid" : "Partial";
+        }
+
+        return Ok(items.Select(t => ApiMap.Tenant(t, PayStatusOf(t.Id))));
     }
 
     [HttpGet("{id:int}")]

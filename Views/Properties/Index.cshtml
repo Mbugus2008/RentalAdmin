@@ -1,6 +1,8 @@
 @model IEnumerable<Property>
 @{
     ViewData["Title"] = "Properties";
+    var maintenanceIds = ViewBag.MaintenancePropertyIds as System.Collections.Generic.HashSet<int> ?? new System.Collections.Generic.HashSet<int>();
+    var occupiedIds = ViewBag.OccupiedPropertyIds as System.Collections.Generic.HashSet<int> ?? new System.Collections.Generic.HashSet<int>();
 }
 
 <div class="page-head">
@@ -21,6 +23,7 @@
                     <th>Name</th>
                     <th>Address</th>
                     <th>Units</th>
+                    <th>Status</th>
                     <th>Leases</th>
                     <th></th>
                 </tr>
@@ -35,6 +38,20 @@
                             <div class="cell-sub">@property.City, @property.State @property.ZipCode</div>
                         </td>
                         <td><span class="chip">@property.Units units</span></td>
+                        <td>
+                            @if (maintenanceIds.Contains(property.Id))
+                            {
+                                <span class="badge badge-soft-warning">Maintenance</span>
+                            }
+                            else if (occupiedIds.Contains(property.Id))
+                            {
+                                <span class="badge badge-soft-success">Occupied</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-soft-neutral">Vacant</span>
+                            }
+                        </td>
                         <td><span class="chip">@property.Leases.Count leases</span></td>
                         <td class="text-end">
                             <div class="btn-group">
